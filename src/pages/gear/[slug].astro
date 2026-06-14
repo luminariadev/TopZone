@@ -1,0 +1,100 @@
+---
+// src/pages/gear/[slug].astro
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { gears, type Gear } from '../../data/gears';
+
+export function getStaticPaths() {
+  return gears.map((gear) => ({
+    params: { slug: gear.slug },
+    props: { gear },
+  }));
+}
+
+interface Props { gear: Gear; }
+const { gear } = Astro.props;
+
+const formatted = `Rp ${gear.price.toLocaleString('id-ID')}`;
+---
+
+<Layout>
+  <Navbar />
+
+  <section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+
+        <!-- Product Image -->
+        <div class="border-4 border-black shadow-[8px_8px_0px_0px_#000] overflow-hidden">
+          <img src={gear.img} alt={gear.name} class="w-full h-80 object-cover" />
+          <div class="bg-neon-yellow border-t-4 border-black px-4 py-2">
+            <span class="font-black text-sm uppercase tracking-wider">{gear.tag}</span>
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div>
+          <a href="/#gear" class="inline-flex items-center gap-1 text-sm font-bold text-gray-500 hover:text-black transition-colors mb-4">
+            ← Kembali ke Gear
+          </a>
+          <h1 class="text-4xl md:text-5xl font-black mb-3">{gear.name}</h1>
+          <p class="text-gray-600 font-medium mb-6 leading-relaxed">{gear.description}</p>
+
+          <div class="text-4xl font-black mb-6" style="color:#FF007F; -webkit-text-stroke:1px #000;">
+            {formatted}
+          </div>
+
+          <!-- Specs Table -->
+          <div class="border-4 border-black mb-8">
+            <div class="bg-black text-neon-yellow px-4 py-2 font-black uppercase tracking-wider text-sm">Spesifikasi</div>
+            {gear.specs.map((spec, i) => (
+              <div class={`flex justify-between px-4 py-3 font-medium ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-t-2 border-black/10`}>
+                <span class="font-bold text-gray-600">{spec.label}</span>
+                <span class="font-black">{spec.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <!-- Add to Cart -->
+          <button
+            id="add-gear-btn"
+            class="w-full py-4 font-black uppercase tracking-wider text-lg bg-neon-pink text-white border-4 border-black shadow-[4px_4px_0px_0px_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#000] transition-all"
+            data-id={`gear-${gear.slug}`}
+            data-name={gear.name}
+            data-price={gear.price}
+            data-img={gear.img}
+          >
+            🛒 Tambah ke Keranjang
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast -->
+  <div id="gear-toast" class="hidden fixed bottom-6 right-6 z-50 bg-black text-neon-green font-black px-5 py-3 border-4 border-neon-green shadow-[4px_4px_0px_0px_#39FF14]">
+    ✓ Ditambahkan ke keranjang!
+  </div>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { addToCart } from '../../stores/cart';
+
+  const btn = document.getElementById('add-gear-btn') as HTMLButtonElement | null;
+  const toast = document.getElementById('gear-toast');
+
+  btn?.addEventListener('click', () => {
+    addToCart({
+      id: btn.dataset.id!,
+      name: btn.dataset.name!,
+      price: Number(btn.dataset.price),
+      img: btn.dataset.img!,
+      type: 'gear',
+    });
+    toast?.classList.remove('hidden');
+    setTimeout(() => toast?.classList.add('hidden'), 2000);
+  });
+</script>
