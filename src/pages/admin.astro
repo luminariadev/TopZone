@@ -1,74 +1,81 @@
 ---
 // src/pages/admin.astro
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 ---
 
 <Layout>
-  <Navbar />
-
   <!-- Login Gate -->
   <div id="login-gate" class="min-h-screen flex items-center justify-center bg-neon-yellow py-16 px-4">
     <div class="w-full max-w-md border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_#000]">
-      <h1 class="text-4xl font-black text-center mb-2">Admin <span style="color:#39FF14; -webkit-text-stroke:1px #000;">Panel</span></h1>
-      <p class="text-gray-600 font-bold text-center mb-6">Masuk sebagai admin</p>
+      <div class="text-center mb-6">
+        <div class="text-5xl mb-2">&#x1F512;</div>
+        <h1 class="text-4xl font-black">Admin <span style="color:#39FF14; -webkit-text-stroke:1px #000;">Panel</span></h1>
+        <p class="text-gray-600 font-bold text-sm mt-1">Akses terbatas untuk administrator</p>
+      </div>
       <form id="admin-login-form" class="space-y-4">
         <div>
           <label class="text-sm font-black uppercase tracking-wider mb-2 block">Email</label>
-          <input type="email" id="admin-email" value="admin@topzone.com" class="w-full px-4 py-3 border-3 border-black font-bold text-lg shadow-[3px_3px_0px_0px_#000] focus:shadow-none focus:translate-x-[2px] focus:translate-y-[2px] outline-none transition-all" />
+          <input type="email" id="admin-email" class="w-full px-4 py-3 border-3 border-black font-bold text-lg shadow-[3px_3px_0px_0px_#000] focus:shadow-none focus:translate-x-[2px] focus:translate-y-[2px] outline-none transition-all" placeholder="admin@topzone.com" />
         </div>
         <div>
           <label class="text-sm font-black uppercase tracking-wider mb-2 block">Password</label>
-          <input type="password" id="admin-password" class="w-full px-4 py-3 border-3 border-black font-bold text-lg shadow-[3px_3px_0px_0px_#000] focus:shadow-none focus:translate-x-[2px] focus:translate-y-[2px] outline-none transition-all" />
+          <input type="password" id="admin-password" class="w-full px-4 py-3 border-3 border-black font-bold text-lg shadow-[3px_3px_0px_0px_#000] focus:shadow-none focus:translate-x-[2px] focus:translate-y-[2px] outline-none transition-all" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" />
         </div>
-        <div id="admin-login-error" class="hidden bg-red-500 text-white font-black px-4 py-3 border-2 border-black text-sm"></div>
-        <button type="submit" class="w-full py-4 font-black uppercase tracking-wider text-lg bg-black text-neon-green border-4 border-black shadow-[4px_4px_0px_0px_#39FF14] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#39FF14] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#39FF14] transition-all">Masuk</button>
+        <div id="admin-login-error" class="hidden bg-red-500 text-white font-black px-4 py-3 border-2 border-black text-sm text-center"></div>
+        <button type="submit" id="admin-login-btn" class="w-full py-4 font-black uppercase tracking-wider text-lg bg-black text-neon-green border-4 border-black shadow-[4px_4px_0px_0px_#39FF14] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#39FF14] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#39FF14] transition-all">Masuk ke Admin</button>
       </form>
-      <p class="text-center text-xs text-gray-500 font-bold mt-4">Default: admin@topzone.com / admin123</p>
+      <div class="mt-6 text-center">
+        <a href="/" class="text-sm font-black underline hover:text-neon-pink transition-colors">&larr; Kembali ke Beranda</a>
+      </div>
     </div>
   </div>
 
-  <!-- Dashboard (hidden until login) -->
+  <!-- Dashboard -->
   <div id="admin-dashboard" class="hidden min-h-screen bg-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Header -->
-      <div class="flex justify-between items-center mb-8">
-        <div>
-          <h1 class="text-5xl font-black">Admin <span style="color:#39FF14; -webkit-text-stroke:1px #000;">Panel</span></h1>
-          <p class="text-gray-500 font-medium">Kelola games, gear, dan pesanan.</p>
+    <!-- Admin Top Bar -->
+    <header class="bg-black text-white border-b-4 border-neon-yellow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl font-black tracking-tight">&#x1F3AE; ADMIN</span>
+          <span class="bg-neon-yellow text-black text-xs font-black px-2 py-1">PANEL</span>
         </div>
-        <button id="admin-logout" class="px-5 py-2 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Logout</button>
+        <div class="flex items-center gap-4">
+          <span class="text-xs text-gray-400 hidden sm:inline" id="session-timer"></span>
+          <button id="admin-logout" class="px-4 py-2 text-sm font-black border-2 border-neon-yellow text-neon-yellow hover:bg-neon-yellow hover:text-black transition-all">Logout</button>
+        </div>
       </div>
+    </header>
 
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <!-- Nav Tabs -->
-      <div class="flex flex-wrap gap-2 mb-8 border-b-4 border-black pb-2">
-        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-neon-yellow shadow-[2px_2px_0px_0px_#000]" data-tab="games">Games</button>
-        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]" data-tab="gear">Gear</button>
-        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]" data-tab="orders">Orders</button>
+      <div class="flex flex-wrap gap-2 mb-6 border-b-4 border-black pb-2">
+        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-neon-yellow shadow-[2px_2px_0px_0px_#000]" data-tab="games">&#x1F3AE; Games</button>
+        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]" data-tab="gear">&#x1F3B5; Gear</button>
+        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]" data-tab="orders">&#x1F4E6; Orders</button>
       </div>
 
-      <!-- ===== GAMES TAB ===== -->
+      <!-- GAMES -->
       <div id="panel-games" class="space-y-6">
         <div class="flex justify-between items-center">
-          <h2 class="text-3xl font-black">Games</h2>
+          <h2 class="text-3xl font-black">&#x1F3AE; Games</h2>
           <button id="game-add-btn" class="px-5 py-3 font-black border-2 border-black bg-neon-green shadow-[3px_3px_0px_0px_#000] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all">+ Tambah Game</button>
         </div>
         <div id="games-list" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
       </div>
 
-      <!-- ===== GEAR TAB ===== -->
+      <!-- GEAR -->
       <div id="panel-gear" class="hidden space-y-6">
         <div class="flex justify-between items-center">
-          <h2 class="text-3xl font-black">Gear</h2>
+          <h2 class="text-3xl font-black">&#x1F3B5; Gear</h2>
           <button id="gear-add-btn" class="px-5 py-3 font-black border-2 border-black bg-neon-yellow shadow-[3px_3px_0px_0px_#000] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all">+ Tambah Gear</button>
         </div>
         <div id="gear-list" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
       </div>
 
-      <!-- ===== ORDERS TAB ===== -->
+      <!-- ORDERS -->
       <div id="panel-orders" class="hidden space-y-6">
-        <h2 class="text-3xl font-black">Orders</h2>
+        <h2 class="text-3xl font-black">&#x1F4E6; Orders</h2>
         <div class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] overflow-x-auto">
           <table class="w-full text-left">
             <thead class="border-b-4 border-black bg-gray-50">
@@ -90,59 +97,59 @@ import Footer from '../components/Footer.astro';
     </div>
   </div>
 
-  <!-- MODAL: Add/Edit Game -->
-  <div id="game-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <!-- MODAL: Game -->
+  <div id="game-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white border-4 border-black p-6 w-full max-w-lg shadow-[8px_8px_0px_0px_#000] max-h-[90vh] overflow-y-auto">
       <h3 class="text-2xl font-black mb-4" id="game-modal-title">Tambah Game</h3>
       <form id="game-form" class="space-y-3">
         <input type="hidden" id="game-edit-id" />
         <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Nama Game</label><input id="game-name" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] outline-none transition-all" /></div>
-        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Slug (url)</label><input id="game-slug" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] outline-none transition-all" /></div>
-        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Image Path</label><input id="game-img" value="/assets/mlbb.png" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] outline-none transition-all" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Slug (url)</label><input id="game-slug" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Image Path</label><input id="game-img" value="/assets/mlbb.png" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
         <div class="flex gap-3">
-          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Color</label><input id="game-color" value="#39FF14" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
-          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Badge</label><input id="game-badge" value="New" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Color</label><input id="game-color" value="#39FF14" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Badge</label><input id="game-badge" value="New" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
           <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Category</label>
-            <select id="game-category" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000] bg-white">
+            <select id="game-category" class="w-full px-3 py-2 border-3 border-black font-bold bg-white">
               <option value="mobile">Mobile</option><option value="pc">PC</option><option value="console">Console</option>
             </select>
           </div>
         </div>
-        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Currency</label><input id="game-currency" value="Diamond" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Currency</label><input id="game-currency" value="Diamond" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
         <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Description</label><textarea id="game-desc" rows="2" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]"></textarea></div>
-        <div class="border-2 border-black p-3 bg-gray-50"><p class="font-black text-sm mb-2">Top-Up Packages</p><div id="game-packages" class="space-y-2"></div><button type="button" id="game-add-pkg" class="mt-2 px-3 py-1 text-xs font-black border-2 border-black hover:bg-black hover:text-white transition-all">+ Add Package</button></div>
+        <div class="border-2 border-black p-3 bg-gray-50"><p class="font-black text-sm mb-2">Top-Up Packages</p><div id="game-packages" class="space-y-2"></div><button type="button" id="game-add-pkg" class="mt-2 px-3 py-1 text-xs font-black border border-black hover:bg-black hover:text-white transition-all">+ Add Package</button></div>
         <div class="flex gap-3 pt-2"><button type="submit" class="flex-1 py-3 font-black bg-neon-green border-2 border-black shadow-[2px_2px_0px_0px_#000]">Save</button><button type="button" id="game-modal-close" class="flex-1 py-3 font-black bg-gray-200 border-2 border-black">Cancel</button></div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: Add/Edit Gear -->
-  <div id="gear-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <!-- MODAL: Gear -->
+  <div id="gear-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white border-4 border-black p-6 w-full max-w-lg shadow-[8px_8px_0px_0px_#000] max-h-[90vh] overflow-y-auto">
       <h3 class="text-2xl font-black mb-4" id="gear-modal-title">Tambah Gear</h3>
       <form id="gear-form" class="space-y-3">
         <input type="hidden" id="gear-edit-id" />
         <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Nama Gear</label><input id="gear-name" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
-        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Slug</label><input id="gear-slug" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
-        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Image Path</label><input id="gear-img" value="/assets/keyboard.png" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Slug</label><input id="gear-slug" required class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Image Path</label><input id="gear-img" value="/assets/keyboard.png" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
         <div class="flex gap-3">
-          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Price (IDR)</label><input id="gear-price" type="number" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
-          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Tag</label><input id="gear-tag" value="Gaming" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Price</label><input id="gear-price" type="number" required class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Tag</label><input id="gear-tag" value="Gaming" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
           <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Category</label>
-            <select id="gear-category" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000] bg-white">
+            <select id="gear-category" class="w-full px-3 py-2 border-3 border-black font-bold bg-white">
               <option value="keyboard">Keyboard</option><option value="mouse">Mouse</option><option value="headset">Headset</option><option value="monitor">Monitor</option>
             </select>
           </div>
         </div>
         <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Description</label><textarea id="gear-desc" rows="2" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]"></textarea></div>
-        <div class="border-2 border-black p-3 bg-gray-50"><p class="font-black text-sm mb-2">Specifications</p><div id="gear-specs" class="space-y-2"></div><button type="button" id="gear-add-spec" class="mt-2 px-3 py-1 text-xs font-black border-2 border-black hover:bg-black hover:text-white transition-all">+ Add Spec</button></div>
+        <div class="border-2 border-black p-3 bg-gray-50"><p class="font-black text-sm mb-2">Specifications</p><div id="gear-specs" class="space-y-2"></div><button type="button" id="gear-add-spec" class="mt-2 px-3 py-1 text-xs font-black border border-black hover:bg-black hover:text-white transition-all">+ Add Spec</button></div>
         <div class="flex gap-3 pt-2"><button type="submit" class="flex-1 py-3 font-black bg-neon-yellow border-2 border-black shadow-[2px_2px_0px_0px_#000]">Save</button><button type="button" id="gear-modal-close" class="flex-1 py-3 font-black bg-gray-200 border-2 border-black">Cancel</button></div>
       </form>
     </div>
   </div>
 
   <!-- MODAL: Order Status -->
-  <div id="status-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <div id="status-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white border-4 border-black p-6 w-full max-w-sm shadow-[8px_8px_0px_0px_#000]">
       <h3 class="text-2xl font-black mb-2">Ubah Status</h3>
       <p class="font-bold mb-4 text-sm text-gray-500" id="modal-order-ref"></p>
@@ -162,13 +169,67 @@ import Footer from '../components/Footer.astro';
 <script>
   const ADMIN_EMAIL = 'admin@topzone.com';
   const ADMIN_PASS = 'admin123';
+  const SESSION_KEY = 'topzone_admin_session';
+  const SESSION_TIME = 30 * 60 * 1000; // 30 menit
   const STORAGE_GAMES = 'topzone_admin_games';
   const STORAGE_GEAR = 'topzone_admin_gear';
 
-  // --- Auth ----------------------------------------------
-  function checkAuth() {
-    return localStorage.getItem('topzone_admin_session') === 'true';
+  // -------------------------------------------------------
+  // SECURITY: Session Management
+  // -------------------------------------------------------
+
+  function getSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      if (!s || !s.email || !s.time) return null;
+      const elapsed = Date.now() - s.time;
+      if (elapsed > SESSION_TIME) {
+        localStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+      return s;
+    } catch { return null; }
   }
+
+  function setSession() {
+    const s = { email: ADMIN_EMAIL, time: Date.now() };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+  }
+
+  function refreshSession() {
+    const s = getSession();
+    if (s) { s.time = Date.now(); localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+  }
+
+  function clearSession() {
+    localStorage.removeItem(SESSION_KEY);
+  }
+
+  // Auto-refresh session on user activity
+  document.addEventListener('click', () => refreshSession());
+  document.addEventListener('keydown', () => refreshSession());
+
+  // Session timer display
+  function updateSessionTimer() {
+    const el = document.getElementById('session-timer');
+    if (!el) return;
+    const s = getSession();
+    if (!s) { el.textContent = ''; return; }
+    const remaining = Math.max(0, SESSION_TIME - (Date.now() - s.time));
+    const min = Math.floor(remaining / 60000);
+    const sec = Math.floor((remaining % 60000) / 1000);
+    el.textContent = 'Sesi: ' + min + 'm ' + sec.toString().padStart(2,'0') + 's';
+  }
+  setInterval(updateSessionTimer, 1000);
+
+  // -------------------------------------------------------
+  // AUTH
+  // -------------------------------------------------------
+
+  let loginAttempts = 0;
+  let loginCooldown = false;
 
   function showGate() {
     document.getElementById('login-gate').classList.remove('hidden');
@@ -179,30 +240,57 @@ import Footer from '../components/Footer.astro';
     document.getElementById('login-gate').classList.add('hidden');
     document.getElementById('admin-dashboard').classList.remove('hidden');
     renderAll();
+    refreshSession();
   }
 
-  if (checkAuth()) showDashboard();
+  if (getSession()) { showDashboard(); }
 
   document.getElementById('admin-login-form').addEventListener('submit', (e) => {
     e.preventDefault();
+    const err = document.getElementById('admin-login-error');
+    const btn = document.getElementById('admin-login-btn');
+
+    if (loginCooldown) {
+      err.textContent = 'Terlalu banyak percobaan. Tunggu beberapa saat.';
+      err.classList.remove('hidden');
+      return;
+    }
+
     const email = document.getElementById('admin-email').value;
     const pass = document.getElementById('admin-password').value;
-    const err = document.getElementById('admin-login-error');
+
     if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-      localStorage.setItem('topzone_admin_session', 'true');
+      loginAttempts = 0;
+      setSession();
       showDashboard();
     } else {
-      err.textContent = 'Email atau password salah!';
+      loginAttempts++;
+      err.textContent = 'Email atau password salah! (Percobaan: ' + loginAttempts + ')';
       err.classList.remove('hidden');
+      if (loginAttempts >= 5) {
+        loginCooldown = true;
+        btn.disabled = true;
+        btn.textContent = 'Tunggu 30 detik...';
+        setTimeout(() => {
+          loginCooldown = false;
+          loginAttempts = 0;
+          btn.disabled = false;
+          btn.textContent = 'Masuk ke Admin';
+          err.textContent = 'Coba lagi.';
+        }, 30000);
+      }
     }
   });
 
   document.getElementById('admin-logout').addEventListener('click', () => {
-    localStorage.removeItem('topzone_admin_session');
+    clearSession();
     showGate();
   });
 
-  // --- Tab Switching -------------------------------------
+  // -------------------------------------------------------
+  // TAB SWITCHING
+  // -------------------------------------------------------
+
   document.querySelectorAll('.admin-tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.admin-tab').forEach((b) => { b.style.background = '#fff'; });
@@ -214,7 +302,10 @@ import Footer from '../components/Footer.astro';
     });
   });
 
-  // --- Helpers -------------------------------------------
+  // -------------------------------------------------------
+  // HELPERS
+  // -------------------------------------------------------
+
   function formatRp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
 
   function statusBadge(s) {
@@ -225,33 +316,40 @@ import Footer from '../components/Footer.astro';
 
   function randomId() { return Date.now().toString(36) + '-' + Math.random().toString(36).substr(2,6); }
 
-  // --- Games CRUD ----------------------------------------
+  // -------------------------------------------------------
+  // GAMES CRUD
+  // -------------------------------------------------------
+
   function getGames() { try { return JSON.parse(localStorage.getItem(STORAGE_GAMES) || '[]'); } catch { return []; } }
   function saveGames(d) { localStorage.setItem(STORAGE_GAMES, JSON.stringify(d)); }
 
   function renderGames() {
     const list = document.getElementById('games-list');
     const games = getGames();
+    if (games.length === 0) {
+      list.innerHTML = '<div class="col-span-full text-center py-12 border-4 border-dashed border-black"><p class="text-xl font-black text-gray-400">Belum ada game. Klik + Tambah Game untuk mulai.</p></div>';
+      return;
+    }
     list.innerHTML = games.map((g, i) => '<div class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] p-5">' +
       '<div class="flex justify-between items-start mb-3">' +
-        '<div><h3 class="text-xl font-black">' + g.name + '</h3>' +
-        '<p class="text-xs text-gray-500 font-bold">' + g.slug + ' &middot; ' + g.currency + '</p></div>' +
-        '<span class="px-2 py-1 text-xs font-black border-2 border-black" style="background:' + g.color + '">' + g.badge + '</span></div>' +
+        '<div><h3 class="text-xl font-black">' + (g.name||'') + '</h3>' +
+        '<p class="text-xs text-gray-500 font-bold">/' + (g.slug||'') + ' &middot; ' + (g.currency||'') + '</p></div>' +
+        '<span class="px-2 py-1 text-xs font-black border-2 border-black" style="background:' + (g.color||'#39FF14') + '">' + (g.badge||'') + '</span></div>' +
       '<p class="text-sm font-medium text-gray-600 mb-2">' + (g.description||'') + '</p>' +
-      '<p class="text-sm font-bold mb-2">Packages (' + (g.packages||[]).length + ')</p>' +
+      '<p class="text-sm font-bold mb-1">Packages (' + (g.packages||[]).length + ')</p>' +
+      '<div class="text-xs text-gray-500 mb-3">' + (g.packages||[]).map(function(p) { return p.label + ': ' + formatRp(p.price); }).join(', ') + '</div>' +
       '<div class="flex gap-2"><button class="game-edit px-4 py-2 text-xs font-black border-2 border-black bg-neon-green hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Edit</button>' +
       '<button class="game-del px-4 py-2 text-xs font-black border-2 border-black bg-red-400 text-white hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Hapus</button></div></div>').join('');
-
-    list.querySelectorAll('.game-edit').forEach((b) => b.addEventListener('click', () => openGameModal(parseInt(b.dataset.idx))));
-    list.querySelectorAll('.game-del').forEach((b) => b.addEventListener('click', () => { if (confirm('Hapus game ini?')) { const g = getGames(); g.splice(parseInt(b.dataset.idx),1); saveGames(g); renderGames(); renderProductsTable(); }}));
+    list.querySelectorAll('.game-edit').forEach((b) => b.addEventListener('click', function() { openGameModal(parseInt(this.dataset.idx)); }));
+    list.querySelectorAll('.game-del').forEach((b) => b.addEventListener('click', function() { if (confirm('Hapus game ' + (getGames()[parseInt(this.dataset.idx)]||{}).name + '?')) { var g = getGames(); g.splice(parseInt(this.dataset.idx),1); saveGames(g); renderGames(); }}));
   }
 
-  let gameEditingIdx = -1;
+  var gameEditingIdx = -1;
 
   function openGameModal(idx) {
     gameEditingIdx = idx;
-    const games = getGames();
-    const g = idx >= 0 ? games[idx] : { name:'', slug:'', img:'/assets/mlbb.png', color:'#39FF14', badge:'New', category:'mobile', currency:'Diamond', description:'', packages:[] };
+    var games = getGames();
+    var g = idx >= 0 ? games[idx] : { name:'', slug:'', img:'/assets/mlbb.png', color:'#39FF14', badge:'New', category:'mobile', currency:'Diamond', description:'', packages:[] };
     document.getElementById('game-modal-title').textContent = idx >= 0 ? 'Edit Game' : 'Tambah Game';
     document.getElementById('game-edit-id').value = g.slug || '';
     document.getElementById('game-name').value = g.name || '';
@@ -267,22 +365,22 @@ import Footer from '../components/Footer.astro';
   }
 
   function renderGamePackages(pkgs) {
-    const el = document.getElementById('game-packages');
-    el.innerHTML = pkgs.map((p, i) => '<div class="flex gap-2 items-center"><input class="pkg-label flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + p.label + '" placeholder="Label" /><input class="pkg-price w-28 px-2 py-1 border-2 border-black font-bold text-sm" type="number" value="' + p.price + '" placeholder="Price" /><button type="button" class="pkg-del px-2 py-1 text-xs font-black border-2 border-black bg-red-400 text-white" data-idx="' + i + '">X</button></div>').join('');
-    el.querySelectorAll('.pkg-del').forEach((b) => b.addEventListener('click', () => { const p = getPkgData(); p.splice(parseInt(b.dataset.idx),1); renderGamePackages(p); }));
+    var el = document.getElementById('game-packages');
+    el.innerHTML = pkgs.map(function(p, i) { return '<div class="flex gap-2 items-center"><input class="pkg-label flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + (p.label||'') + '" placeholder="Label" /><input class="pkg-price w-28 px-2 py-1 border-2 border-black font-bold text-sm" type="number" value="' + (p.price||0) + '" placeholder="Price" /><button type="button" class="pkg-del px-2 py-1 text-xs font-black border-2 border-black bg-red-400 text-white" data-idx="' + i + '">X</button></div>'; }).join('');
+    el.querySelectorAll('.pkg-del').forEach(function(b) { b.addEventListener('click', function() { var p = getPkgData(); p.splice(parseInt(this.dataset.idx),1); renderGamePackages(p); }); });
   }
 
   function getPkgData() {
-    const items = document.querySelectorAll('#game-packages > div');
-    return Array.from(items).map((d) => ({ label: d.querySelector('.pkg-label').value, price: parseInt(d.querySelector('.pkg-price').value) || 0 }));
+    var items = document.querySelectorAll('#game-packages > div');
+    return Array.from(items).map(function(d) { return { label: d.querySelector('.pkg-label').value, price: parseInt(d.querySelector('.pkg-price').value) || 0 }; });
   }
 
-  document.getElementById('game-add-pkg').addEventListener('click', () => { const p = getPkgData(); p.push({label:'',price:0}); renderGamePackages(p); });
+  document.getElementById('game-add-pkg').addEventListener('click', function() { var p = getPkgData(); p.push({label:'',price:0}); renderGamePackages(p); });
 
-  document.getElementById('game-form').addEventListener('submit', (e) => {
+  document.getElementById('game-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    const games = getGames();
-    const data = {
+    var games = getGames();
+    var data = {
       slug: document.getElementById('game-slug').value,
       name: document.getElementById('game-name').value,
       img: document.getElementById('game-img').value,
@@ -291,45 +389,51 @@ import Footer from '../components/Footer.astro';
       category: document.getElementById('game-category').value,
       currency: document.getElementById('game-currency').value,
       description: document.getElementById('game-desc').value,
-      packages: getPkgData().filter((p) => p.label),
+      packages: getPkgData().filter(function(p) { return p.label; }),
     };
     if (gameEditingIdx >= 0) { games[gameEditingIdx] = data; } else { games.push(data); }
     saveGames(games);
     document.getElementById('game-modal').classList.add('hidden');
     renderGames();
-    renderProductsTable();
   });
 
-  document.getElementById('game-modal-close').addEventListener('click', () => { document.getElementById('game-modal').classList.add('hidden'); });
+  document.getElementById('game-modal-close').addEventListener('click', function() { document.getElementById('game-modal').classList.add('hidden'); });
 
-  // --- Gear CRUD -----------------------------------------
+  // -------------------------------------------------------
+  // GEAR CRUD
+  // -------------------------------------------------------
+
   function getGearItems() { try { return JSON.parse(localStorage.getItem(STORAGE_GEAR) || '[]'); } catch { return []; } }
   function saveGearItems(d) { localStorage.setItem(STORAGE_GEAR, JSON.stringify(d)); }
 
   function renderGear() {
-    const list = document.getElementById('gear-list');
-    const items = getGearItems();
-    list.innerHTML = items.map((g, i) => '<div class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] p-5">' +
+    var list = document.getElementById('gear-list');
+    var items = getGearItems();
+    if (items.length === 0) {
+      list.innerHTML = '<div class="col-span-full text-center py-12 border-4 border-dashed border-black"><p class="text-xl font-black text-gray-400">Belum ada gear. Klik + Tambah Gear untuk mulai.</p></div>';
+      return;
+    }
+    list.innerHTML = items.map(function(g, i) { return '<div class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] p-5">' +
       '<div class="flex justify-between items-start mb-3">' +
-        '<div><h3 class="text-xl font-black">' + g.name + '</h3>' +
-        '<p class="text-xs text-gray-500 font-bold">' + g.slug + ' &middot; ' + g.category + '</p></div>' +
-        '<span class="px-2 py-1 text-xs font-black border-2 border-black bg-neon-yellow">' + g.tag + '</span></div>' +
+        '<div><h3 class="text-xl font-black">' + (g.name||'') + '</h3>' +
+        '<p class="text-xs text-gray-500 font-bold">/' + (g.slug||'') + ' &middot; ' + (g.category||'') + '</p></div>' +
+        '<span class="px-2 py-1 text-xs font-black border-2 border-black bg-neon-yellow">' + (g.tag||'') + '</span></div>' +
       '<p class="text-sm font-medium text-gray-600 mb-2">' + (g.description||'') + '</p>' +
       '<p class="text-xl font-black text-neon-pink mb-2">' + formatRp(g.price) + '</p>' +
-      '<p class="text-sm font-bold mb-2">Specs (' + (g.specs||[]).length + ')</p>' +
+      '<p class="text-sm font-bold mb-1">Specs (' + (g.specs||[]).length + ')</p>' +
+      '<div class="text-xs text-gray-500 mb-3">' + (g.specs||[]).map(function(s) { return s.label + ': ' + s.value; }).join(', ') + '</div>' +
       '<div class="flex gap-2"><button class="gear-edit px-4 py-2 text-xs font-black border-2 border-black bg-neon-green hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Edit</button>' +
-      '<button class="gear-del px-4 py-2 text-xs font-black border-2 border-black bg-red-400 text-white hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Hapus</button></div></div>').join('');
-
-    list.querySelectorAll('.gear-edit').forEach((b) => b.addEventListener('click', () => openGearModal(parseInt(b.dataset.idx))));
-    list.querySelectorAll('.gear-del').forEach((b) => b.addEventListener('click', () => { if (confirm('Hapus gear ini?')) { const g = getGearItems(); g.splice(parseInt(b.dataset.idx),1); saveGearItems(g); renderGear(); renderProductsTable(); }}));
+      '<button class="gear-del px-4 py-2 text-xs font-black border-2 border-black bg-red-400 text-white hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Hapus</button></div></div>'; }).join('');
+    list.querySelectorAll('.gear-edit').forEach(function(b) { b.addEventListener('click', function() { openGearModal(parseInt(this.dataset.idx)); }); });
+    list.querySelectorAll('.gear-del').forEach(function(b) { b.addEventListener('click', function() { if (confirm('Hapus gear ' + (getGearItems()[parseInt(this.dataset.idx)]||{}).name + '?')) { var g = getGearItems(); g.splice(parseInt(this.dataset.idx),1); saveGearItems(g); renderGear(); }}); });
   }
 
-  let gearEditingIdx = -1;
+  var gearEditingIdx = -1;
 
   function openGearModal(idx) {
     gearEditingIdx = idx;
-    const items = getGearItems();
-    const g = idx >= 0 ? items[idx] : { name:'', slug:'', img:'/assets/keyboard.png', price:0, tag:'Gaming', category:'keyboard', description:'', specs:[] };
+    var items = getGearItems();
+    var g = idx >= 0 ? items[idx] : { name:'', slug:'', img:'/assets/keyboard.png', price:0, tag:'Gaming', category:'keyboard', description:'', specs:[] };
     document.getElementById('gear-modal-title').textContent = idx >= 0 ? 'Edit Gear' : 'Tambah Gear';
     document.getElementById('gear-edit-id').value = g.slug || '';
     document.getElementById('gear-name').value = g.name || '';
@@ -344,22 +448,22 @@ import Footer from '../components/Footer.astro';
   }
 
   function renderGearSpecs(specs) {
-    const el = document.getElementById('gear-specs');
-    el.innerHTML = specs.map((s, i) => '<div class="flex gap-2 items-center"><input class="spec-label flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + s.label + '" placeholder="Label" /><input class="spec-val flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + s.value + '" placeholder="Value" /><button type="button" class="spec-del px-2 py-1 text-xs font-black border-2 border-black bg-red-400 text-white" data-idx="' + i + '">X</button></div>').join('');
-    el.querySelectorAll('.spec-del').forEach((b) => b.addEventListener('click', () => { const s = getSpecData(); s.splice(parseInt(b.dataset.idx),1); renderGearSpecs(s); }));
+    var el = document.getElementById('gear-specs');
+    el.innerHTML = specs.map(function(s, i) { return '<div class="flex gap-2 items-center"><input class="spec-label flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + (s.label||'') + '" placeholder="Label" /><input class="spec-val flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + (s.value||'') + '" placeholder="Value" /><button type="button" class="spec-del px-2 py-1 text-xs font-black border-2 border-black bg-red-400 text-white" data-idx="' + i + '">X</button></div>'; }).join('');
+    el.querySelectorAll('.spec-del').forEach(function(b) { b.addEventListener('click', function() { var s = getSpecData(); s.splice(parseInt(this.dataset.idx),1); renderGearSpecs(s); }); });
   }
 
   function getSpecData() {
-    const items = document.querySelectorAll('#gear-specs > div');
-    return Array.from(items).map((d) => ({ label: d.querySelector('.spec-label').value, value: d.querySelector('.spec-val').value }));
+    var items = document.querySelectorAll('#gear-specs > div');
+    return Array.from(items).map(function(d) { return { label: d.querySelector('.spec-label').value, value: d.querySelector('.spec-val').value }; });
   }
 
-  document.getElementById('gear-add-spec').addEventListener('click', () => { const s = getSpecData(); s.push({label:'',value:''}); renderGearSpecs(s); });
+  document.getElementById('gear-add-spec').addEventListener('click', function() { var s = getSpecData(); s.push({label:'',value:''}); renderGearSpecs(s); });
 
-  document.getElementById('gear-form').addEventListener('submit', (e) => {
+  document.getElementById('gear-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    const items = getGearItems();
-    const data = {
+    var items = getGearItems();
+    var data = {
       slug: document.getElementById('gear-slug').value,
       name: document.getElementById('gear-name').value,
       img: document.getElementById('gear-img').value,
@@ -367,74 +471,74 @@ import Footer from '../components/Footer.astro';
       tag: document.getElementById('gear-tag').value,
       category: document.getElementById('gear-category').value,
       description: document.getElementById('gear-desc').value,
-      specs: getSpecData().filter((s) => s.label),
+      specs: getSpecData().filter(function(s) { return s.label; }),
     };
     if (gearEditingIdx >= 0) { items[gearEditingIdx] = data; } else { items.push(data); }
     saveGearItems(items);
     document.getElementById('gear-modal').classList.add('hidden');
     renderGear();
-    renderProductsTable();
   });
 
-  document.getElementById('gear-modal-close').addEventListener('click', () => { document.getElementById('gear-modal').classList.add('hidden'); });
+  document.getElementById('gear-modal-close').addEventListener('click', function() { document.getElementById('gear-modal').classList.add('hidden'); });
 
-  // --- Orders --------------------------------------------
+  // -------------------------------------------------------
+  // ORDERS
+  // -------------------------------------------------------
+
   function renderOrders() {
-    const orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
-    const tbody = document.getElementById('orders-table-body');
-    const empty = document.getElementById('orders-empty');
-    tbody.innerHTML = orders.map((o) => '<tr class="border-b-2 border-black/10 hover:bg-gray-50">' +
-      '<td class="px-4 py-3 font-bold text-sm">' + o.id + '</td>' +
-      '<td class="px-4 py-3 font-bold">' + o.name + '</td>' +
-      '<td class="px-4 py-3 text-sm">' + (o.items?.length||0) + ' item</td>' +
+    var orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
+    var tbody = document.getElementById('orders-table-body');
+    var empty = document.getElementById('orders-empty');
+    if (orders.length === 0) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    tbody.innerHTML = orders.map(function(o) { return '<tr class="border-b-2 border-black/10 hover:bg-gray-50">' +
+      '<td class="px-4 py-3 font-bold text-sm">' + (o.id||'') + '</td>' +
+      '<td class="px-4 py-3 font-bold">' + (o.name||'') + '</td>' +
+      '<td class="px-4 py-3 text-sm">' + (o.items?o.items.length:0) + ' item</td>' +
       '<td class="px-4 py-3 font-black text-neon-pink">' + formatRp(o.total) + '</td>' +
       '<td class="px-4 py-3">' + statusBadge(o.status) + '</td>' +
-      '<td class="px-4 py-3 text-sm text-gray-500">' + new Date(o.createdAt).toLocaleDateString('id-ID') + '</td>' +
-      '<td class="px-4 py-3"><button class="order-status-edit px-3 py-1 text-xs font-black border-2 border-black hover:bg-black hover:text-white transition-all" data-id="' + o.id + '">Ubah</button></td></tr>').join('');
-    empty.classList.toggle('hidden', orders.length > 0);
-    tbody.querySelectorAll('.order-status-edit').forEach((b) => b.addEventListener('click', () => openStatusModal(b.dataset.id)));
+      '<td class="px-4 py-3 text-sm text-gray-500">' + (o.createdAt ? new Date(o.createdAt).toLocaleDateString('id-ID') : '-') + '</td>' +
+      '<td class="px-4 py-3"><button class="order-status-edit px-3 py-1 text-xs font-black border-2 border-black hover:bg-black hover:text-white transition-all" data-id="' + (o.id||'') + '">Ubah</button></td></tr>'; }).join('');
+    tbody.querySelectorAll('.order-status-edit').forEach(function(b) { b.addEventListener('click', function() { openStatusModal(this.dataset.id); }); });
   }
 
-  let editingOrderId = null;
+  var editingOrderId = null;
   function openStatusModal(id) {
     editingOrderId = id;
-    const orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
-    const o = orders.find((x) => x.id === id);
+    var orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
+    var o = orders.find(function(x) { return x.id === id; });
     if (!o) return;
     document.getElementById('modal-order-ref').textContent = 'Order #' + id;
     document.getElementById('modal-status-select').value = o.status;
     document.getElementById('status-modal').classList.remove('hidden');
   }
-  document.getElementById('modal-status-close').addEventListener('click', () => { document.getElementById('status-modal').classList.add('hidden'); });
-  document.getElementById('modal-status-save').addEventListener('click', () => {
+  document.getElementById('modal-status-close').addEventListener('click', function() { document.getElementById('status-modal').classList.add('hidden'); });
+  document.getElementById('modal-status-save').addEventListener('click', function() {
     if (!editingOrderId) return;
-    const ns = document.getElementById('modal-status-select').value;
-    let orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
-    orders = orders.map((o) => o.id === editingOrderId ? { ...o, status: ns } : o);
+    var ns = document.getElementById('modal-status-select').value;
+    var orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
+    orders = orders.map(function(o) { return o.id === editingOrderId ? { ...o, status: ns } : o; });
     localStorage.setItem('topzone_orders', JSON.stringify(orders));
     document.getElementById('status-modal').classList.add('hidden');
     renderOrders();
   });
 
-  // --- Products Table (for display in the app) -----------
-  function renderProductsTable() {
-    // Update static data used by other pages
-    const games = getGames();
-    const gearItems = getGearItems();
-    // Store merged data for app pages to use
-    localStorage.setItem('topzone_products_cache', JSON.stringify({ games, gear: gearItems }));
-  }
+  // -------------------------------------------------------
+  // INIT
+  // -------------------------------------------------------
 
-  // --- Init ----------------------------------------------
   function renderAll() {
     renderGames();
     renderGear();
     renderOrders();
-    renderProductsTable();
   }
 
   // Close modals on overlay click
-  document.querySelectorAll('.fixed.inset-0').forEach((m) => {
-    m.addEventListener('click', (e) => { if (e.target === m) m.classList.add('hidden'); });
+  document.querySelectorAll('.fixed.inset-0').forEach(function(m) {
+    m.addEventListener('click', function(e) { if (e.target === m) m.classList.add('hidden'); });
   });
 </script>
