@@ -75,18 +75,18 @@ import CartIcon from './CartIcon.astro';
   }
 
   async function logout() {
-    await supabase.auth.signOut();
+    if (supabase) { await supabase.auth.signOut(); }
     window.location.href = '/';
   }
 
   (async () => {
     setLoading(true);
-    const { data: { session } } = await supabase.auth.getSession();
+    let session = null; if (supabase) { const r = await supabase.auth.getSession(); session = r.data?.session; }
     const currentUser = session?.user ?? null;
     setUser(currentUser);
     renderAuth(currentUser);
     setLoading(false);
-    supabase.auth.onAuthStateChange((event, newSession) => {
+    supabase?.auth?.onAuthStateChange((event, newSession) => {
       const newUser = newSession?.user ?? null;
       setUser(newUser);
       renderAuth(newUser);

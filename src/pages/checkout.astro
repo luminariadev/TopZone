@@ -82,7 +82,7 @@ import Footer from '../components/Footer.astro';
 </Layout>
 
 <script>
-  import { getOrdersKey, getCurrentEmail } from '../stores/auth';
+  import { user, getOrdersKey, getCurrentEmail } from '../stores/auth';
   import { cartItems, cartTotal, clearCart } from '../stores/cart';
 
   const emptyEl = document.getElementById('checkout-empty');
