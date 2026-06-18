@@ -1,0 +1,35 @@
+---
+// src/pages/checkout/success.astro
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import Button from '../../components/Button.astro';
+---
+
+<Layout>
+  <Navbar />
+
+  <section class="py-24 min-h-screen bg-neon-green flex items-center justify-center">
+    <div class="max-w-2xl mx-auto px-4 text-center">
+      <div class="text-8xl mb-4">✑</div>
+      <h1 class="text-5xl font-black mb-4">Pesaman Berhasil! 🚀</h1>
+      <p class="text-xl font-bold mb-2">Terima Kasi</p>
+      <div class="border-4 border-black bg-white p-8 my-8 shadow-[6px_6px_0px_0px_#000]">
+        <p class="text-lg font-bold mb-2">Nomer Pesanan</p>
+        <p class="text-xl font-black" id="order-id"></p>
+        <p class="text-xs text-gray-500 font-bold mt-2">Simpan nomer pesanan untuk pembayaran</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button variant="black" size="lg" href="/">Back to Home</Button>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get('id');
+  document.getElementById('order-id').textContent = orderId ? 'Order #' + orderId : '';
+</script>
