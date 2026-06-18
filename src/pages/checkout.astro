@@ -141,6 +141,8 @@ import Footer from '../components/Footer.astro';
   }
 
   cartItems.subscribe(renderSummary);
+  // Panggil renderSummary() segera agar kontak muncul saat halaman dimuat
+  renderSummary();
   // ═══════════════════════════════════════════════════════
   // VOUCHER SYSTEM
   // ═══════════════════════════════════════════════════════
@@ -229,9 +231,9 @@ import Footer from '../components/Footer.astro';
       items: items.map((i) => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, type: i.type })),
     };
 
-    let orders = JSON.parse(localStorage.getItem('getOrdersKey()') || '[]');
+    let orders = JSON.parse(localStorage.getItem(getOrdersKey()) || '[]');
     orders.unshift(order);
-    localStorage.setItem('getOrdersKey()', JSON.stringify(orders));
+    localStorage.setItem(getOrdersKey(), JSON.stringify(orders));
 
     clearCart();
     window.location.href = '/orders';

@@ -81,15 +81,39 @@ import CartIcon from './CartIcon.astro';
 
   (async () => {
     setLoading(true);
-    let session = null; if (supabase) { const r = await supabase.auth.getSession(); session = r.data?.session; }
-    const currentUser = session?.user ?? null;
-    setUser(currentUser);
+    // Try Supabase session first
+    let session = null;
+    if (supabase) {
+      const r = await supabase.auth.getSession();
+      session = r.data?.session;
+    }
+    let currentUser = session?.user ?? null;
+
+    // Fallback to localStorage auth if no Supabase session
+    if (!currentUser) {
+      try {
+        const localAuth = localStorage.getItem('topzone_current_user');
+        if (localAuth) {
+          const parsed = JSON.parse(localAuth);
+          if (parsed?.isLoggedIn) {
+            currentUser = { email: parsed.email, user_metadata: { full_name: parsed.full_name } };
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Only call setUser if we have a user, otherwise don't overwrite
+    if (currentUser) {
+      setUser(currentUser);
+    }
     renderAuth(currentUser);
     setLoading(false);
     supabase?.auth?.onAuthStateChange((event, newSession) => {
       const newUser = newSession?.user ?? null;
-      setUser(newUser);
-      renderAuth(newUser);
+      if (newUser) {
+        setUser(newUser);
+        renderAuth(newUser);
+      }
     });
   })();
 </script>
