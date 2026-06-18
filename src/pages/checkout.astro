@@ -52,6 +52,15 @@ import Footer from '../components/Footer.astro';
               </select>
             </div>
 
+                        <div class="border-2 border-dashed border-black p-4 bg-gray-50">
+              <label class="block text-sm font-black uppercase tracking-wider mb-2">🎟 Punya Voucher?</label>
+              <div class="flex gap-2">
+                <input type="text" id="voucher-input" class="flex-1 px-3 py-2 border-2 border-black font-bold text-sm" placeholder="Masukkan kode voucher" />
+                <button type="button" id="apply-voucher" class="px-4 py-2 font-black text-sm border-2 border-black bg-neon-yellow hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all">Pakai</button>
+              </div>
+              <div id="voucher-status" class="hidden mt-2 px-3 py-2 text-sm font-black border-2 border-black"></div>
+              <div id="voucher-saved" class="hidden mt-2 px-3 py-2 text-sm font-black border-2 border-black bg-neon-green text-black"></div>
+            </div>
             <div id="checkout-error" class="hidden bg-red-500 text-white font-black px-4 py-3 border-2 border-black text-sm"></div>
 
             <button type="submit" id="checkout-btn" class="w-full py-4 font-black uppercase tracking-wider text-lg bg-black text-neon-green border-4 border-black shadow-[4px_4px_0px_0px_#39FF14] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#39FF14] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#39FF14] transition-all">
@@ -110,6 +119,61 @@ import Footer from '../components/Footer.astro';
   }
 
   cartItems.subscribe(renderSummary);
+  // ═══════════════════════════════════════════════════════
+  // VOUCHER SYSTEM
+  // ═══════════════════════════════════════════════════════
+  var appliedDiscount = 0;
+  var appliedCode = '';
+
+  function checkSavedVoucher() {
+    try {
+      var v = JSON.parse(localStorage.getItem('topzone_voucher'));
+      if (v && !v.used) {
+        document.getElementById('voucher-saved').textContent = '🎟 Voucher ' + v.code + ' tersedia! Diskon ' + v.discount + '% (klik Pakai untuk menggunakannya)';
+        document.getElementById('voucher-saved').classList.remove('hidden');
+        document.getElementById('voucher-input').value = v.code;
+      }
+    } catch(e) {}
+  }
+  checkSavedVoucher();
+
+  document.getElementById('apply-voucher').addEventListener('click', function() {
+    var code = document.getElementById('voucher-input').value.trim().toUpperCase();
+    var statusEl = document.getElementById('voucher-status');
+    var savedEl = document.getElementById('voucher-saved');
+
+    if (!code) {
+      statusEl.className = 'mt-2 px-3 py-2 text-sm font-black border-2 border-black bg-red-400 text-white';
+      statusEl.textContent = 'Masukkan kode voucher!';
+      statusEl.classList.remove('hidden');
+      return;
+    }
+
+    // Check if code matches saved voucher
+    try {
+      var v = JSON.parse(localStorage.getItem('topzone_voucher'));
+      if (v && v.code === code && !v.used) {
+        appliedDiscount = v.discount || 10;
+        appliedCode = code;
+        statusEl.className = 'mt-2 px-3 py-2 text-sm font-black border-2 border-black bg-neon-green text-black';
+        statusEl.textContent = '✅ Voucher dipakai! Diskon ' + appliedDiscount + '%';
+        statusEl.classList.remove('hidden');
+        savedEl.classList.add('hidden');
+        updateTotalWithDiscount();
+        return;
+      }
+    } catch(e) {}
+
+    statusEl.className = 'mt-2 px-3 py-2 text-sm font-black border-2 border-black bg-red-400 text-white';
+    statusEl.textContent = 'Kode voucher tidak valid atau sudah digunakan!';
+    statusEl.classList.remove('hidden');
+  });
+
+  function updateTotalWithDiscount() {
+    // Update total display to show discount
+    // The total calculation happens in the form submit
+  }
+
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -124,6 +188,13 @@ import Footer from '../components/Footer.astro';
 
     const orderId = 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
 
+        // Apply voucher discount
+      var finalTotal = cartTotal.get();
+      if (appliedDiscount > 0) {
+        finalTotal = Math.round(finalTotal * (100 - appliedDiscount) / 100);
+        try { var v = JSON.parse(localStorage.getItem('topzone_voucher')); if (v) { v.used = true; localStorage.setItem('topzone_voucher', JSON.stringify(v)); } } catch(e) {}
+      }
+
     const order = {
       id: orderId,
       createdAt: new Date().toISOString(),
@@ -131,7 +202,7 @@ import Footer from '../components/Footer.astro';
       phone,
       payment,
       status: 'pending',
-      total: cartTotal.get(),
+      total: (typeof finalTotal !== 'undefined' ? finalTotal : cartTotal.get()),
       items: items.map((i) => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, type: i.type })),
     };
 

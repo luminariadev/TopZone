@@ -68,6 +68,10 @@ import Footer from '../components/Footer.astro';
 
           <div id="error-msg" class="hidden bg-red-500 text-white font-black px-4 py-3 border-2 border-black text-sm"></div>
           <div id="success-msg" class="hidden bg-neon-green text-black font-black px-4 py-3 border-2 border-black text-sm"></div>
+          <div id="voucher-info" class="hidden bg-neon-yellow text-black font-black px-4 py-3 border-2 border-black text-sm mt-2 text-center">
+            🎉 Selamat! Kamu dapat voucher <span id="voucher-code-display" class="bg-black text-white px-2 py-1 text-lg"></span>
+            <div class="text-xs mt-1">Diskon 10%! Gunakan di halaman checkout.</div>
+          </div>
 
           <button
             type="submit"
@@ -144,6 +148,13 @@ import Footer from '../components/Footer.astro';
 
     if (data.user && !data.user.confirmed_at) {
       successMsg.textContent = 'Akun berhasil dibuat! Cek email kamu untuk verifikasi, lalu masuk.';
+
+      // Generate welcome voucher
+      var welcomeCode = 'WELCOME-' + Math.random().toString(36).substr(2,8).toUpperCase();
+      var voucher = { code: welcomeCode, discount: 10, used: false, createdAt: new Date().toISOString() };
+      localStorage.setItem('topzone_voucher', JSON.stringify(voucher));
+      document.getElementById('voucher-info').classList.remove('hidden');
+      document.getElementById('voucher-code-display').textContent = welcomeCode;
       successMsg?.classList.remove('hidden');
       registerBtn.textContent = 'Berhasil!';
     } else {
