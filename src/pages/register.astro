@@ -129,38 +129,47 @@ import Footer from '../components/Footer.astro';
     registerBtn.textContent = 'Mendaftarkan...';
     registerBtn.disabled = true;
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullname,
+    // Generate welcome voucher for both Supabase and localStorage fallback
+    var welcomeCode = 'WELCOME-' + Math.random().toString(36).substr(2,8).toUpperCase();
+    var voucher = { code: welcomeCode, discount: 10, used: false, createdAt: new Date().toISOString() };
+
+    // Try Supabase if configured
+    if (supabase) {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullname,
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
-      errorMsg.textContent = error.message;
-      errorMsg?.classList.remove('hidden');
-      registerBtn.textContent = 'Daftar Sekarang';
-      registerBtn.disabled = false;
-      return;
+      if (error) {
+        // If it's a network/config error, fallback to local
+        // If the error is about the user existing, still allow local login
+        errorMsg.textContent = error.message;
+        errorMsg?.classList.remove('hidden');
+        registerBtn.textContent = 'Daftar Sekarang';
+        registerBtn.disabled = false;
+        return;
+      }
+
+      if (data.user && !data.user.confirmed_at) {
+        successMsg.textContent = 'Akun berhasil dibuat! Cek email kamu untuk verifikasi, lalu masuk.';
+        localStorage.setItem('topzone_voucher', JSON.stringify(voucher));
+        document.getElementById('voucher-info').classList.remove('hidden');
+        document.getElementById('voucher-code-display').textContent = welcomeCode;
+        successMsg?.classList.remove('hidden');
+        registerBtn.textContent = 'Berhasil!';
+        return;
+      }
     }
 
-    if (data.user && !data.user.confirmed_at) {
-      successMsg.textContent = 'Akun berhasil dibuat! Cek email kamu untuk verifikasi, lalu masuk.';
-
-      // Generate welcome voucher
-      var welcomeCode = 'WELCOME-' + Math.random().toString(36).substr(2,8).toUpperCase();
-      var voucher = { code: welcomeCode, discount: 10, used: false, createdAt: new Date().toISOString() };
-      localStorage.setItem('topzone_voucher', JSON.stringify(voucher));
-      document.getElementById('voucher-info').classList.remove('hidden');
-      document.getElementById('voucher-code-display').textContent = welcomeCode;
-      successMsg?.classList.remove('hidden');
-      registerBtn.textContent = 'Berhasil!';
-    } else {
-      setLocalUser(email, fullname);
-      var redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/'; window.location.href = redirectUrl;
-    }
+    // localStorage fallback: save user locally + generate voucher + redirect
+    setLocalUser(email, fullname);
+    localStorage.setItem('topzone_voucher', JSON.stringify(voucher));
+    var redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
+    window.location.href = redirectUrl;
   });
 </script>
