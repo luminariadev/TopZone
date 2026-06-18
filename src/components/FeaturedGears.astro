@@ -1,6 +1,7 @@
 <!-- src/components/FeaturedGears.astro -->
 ---
-import { gears } from '../data/gears';
+import { fetchGears } from '../lib/products';
+const gears = await fetchGears();
 ---
 
 <section id="gear" class="py-20 bg-neon-yellow text-black border-t-4 border-black">

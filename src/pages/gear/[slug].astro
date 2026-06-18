@@ -3,9 +3,10 @@
 import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
-import { gears, type Gear } from '../../data/gears';
-
-export function getStaticPaths() {
+import { fetchGears } from '../../lib/products';
+import type { Gear } from '../../data/gears';
+export async function getStaticPaths() {
+  const gears = await fetchGears();
   return gears.map((gear) => ({
     params: { slug: gear.slug },
     props: { gear },

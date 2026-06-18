@@ -4,9 +4,10 @@ import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 import Button from '../../components/Button.astro';
-import { games, type Game, type GamePackage } from '../../data/games';
-
-export function getStaticPaths() {
+import { fetchGames } from '../../lib/products';
+import type { Game } from '../../data/games';
+export async function getStaticPaths() {
+  const games = await fetchGames();
   return games.map((game) => ({
     params: { slug: game.slug },
     props: { game },
