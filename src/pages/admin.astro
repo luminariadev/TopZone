@@ -486,7 +486,7 @@ import Footer from '../components/Footer.astro';
   // -------------------------------------------------------
 
   function renderOrders() {
-    var orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
+    var orders = getAllOrders();
     var tbody = document.getElementById('orders-table-body');
     var empty = document.getElementById('orders-empty');
     if (orders.length === 0) {
@@ -507,22 +507,37 @@ import Footer from '../components/Footer.astro';
   }
 
   var editingOrderId = null;
+  function findOrderInAllKeys(id) {
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && (key === 'topzone_orders' || key.startsWith('topzone_orders_'))) {
+        try {
+          var arr = JSON.parse(localStorage.getItem(key));
+          if (arr) {
+            var found = arr.find(function(x) { return x.id === id; });
+            if (found) return { order: found, key: key, arr: arr };
+          }
+        } catch(e) {}
+      }
+    }
+    return null;
+  }
   function openStatusModal(id) {
     editingOrderId = id;
-    var orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
-    var o = orders.find(function(x) { return x.id === id; });
-    if (!o) return;
+    var result = findOrderInAllKeys(id);
+    if (!result) return;
     document.getElementById('modal-order-ref').textContent = 'Order #' + id;
-    document.getElementById('modal-status-select').value = o.status;
+    document.getElementById('modal-status-select').value = result.order.status;
     document.getElementById('status-modal').classList.remove('hidden');
   }
   document.getElementById('modal-status-close').addEventListener('click', function() { document.getElementById('status-modal').classList.add('hidden'); });
   document.getElementById('modal-status-save').addEventListener('click', function() {
     if (!editingOrderId) return;
     var ns = document.getElementById('modal-status-select').value;
-    var orders = JSON.parse(localStorage.getItem('topzone_orders') || '[]');
-    orders = orders.map(function(o) { return o.id === editingOrderId ? { ...o, status: ns } : o; });
-    localStorage.setItem('topzone_orders', JSON.stringify(orders));
+    var result = findOrderInAllKeys(editingOrderId);
+    if (!result) return;
+    result.arr = result.arr.map(function(o) { return o.id === editingOrderId ? { ...o, status: ns } : o; });
+    localStorage.setItem(result.key, JSON.stringify(result.arr));
     document.getElementById('status-modal').classList.add('hidden');
     renderOrders();
   });
