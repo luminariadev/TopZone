@@ -160,7 +160,7 @@ import Footer from '../components/Footer.astro';
       registerBtn.textContent = 'Berhasil!';
     } else {
       setLocalUser(email, fullname);
-      window.location.href = '/';
+      var redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/'; window.location.href = redirectUrl;
     }
   });
 </script>

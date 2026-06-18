@@ -103,6 +103,6 @@ import Button from '../components/Button.astro';
       return;
     }
 
-    window.location.href = '/';
+    var redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/'; window.location.href = redirectUrl;
   });
 </script>
