@@ -1,0 +1,41 @@
+---
+// src/pages/checkout/success.astro
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import Button from '../../components/Button.astro';
+---
+
+<Layout>
+  <Navbar />
+
+  <section class="py-24 min-h-screen bg-neon-green flex items-center justify-center">
+    <div class="max-w-2xl mx-auto px-4 text-center">
+      <div class="text-8xl mb-4">✑</div>
+      <h1 class="text-5xl font-black mb-4">Pesanan Berhasil! 🚀</h1>
+      <p class="text-xl font-bold mb-2">Terima Kasih</p>
+      <div class="border-4 border-black bg-white p-8 my-8 shadow-[6px_6px_0px_0px_#000]">
+        <p class="text-lg font-bold mb-2">Nomor Pesanan</p>
+        <p class="text-xl font-black" id="order-id"></p><p class="text-sm font-bold mt-2" id="order-status">Status: <span class="text-neon-pink">Menunggu Konfirmasi</span></p>
+        <p class="text-xs text-gray-500 font-bold mt-2">Simpan nomor pesanan untuk konfirmasi pembayaran</p>
+      </div>
+      <div class="border-4 border-black bg-white p-6 mb-6 shadow-[4px_4px_0px_0px_#000] text-left" id="payment-info"><h3 class="font-black text-lg mb-3">💳 Petunjuk Pembayaran</h3><ul class="text-sm font-bold space-y-2 text-gray-700"><li>1. Transfer ke rekening <span class="font-black text-black">BCA 1234567890 a/n TopZone</span></li><li>2. Konfirmasi pembayaran ke <span class="font-black text-black">WhatsApp 0812-3456-7890</span></li><li>3. Pesanan akan diproses setelah pembayaran dikonfirmasi admin</li></ul></div><div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button variant="black" size="lg" href="/">Kembali ke Beranda</Button>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const orderId = urlParams.get('id');
+  document.getElementById('order-id').textContent = orderId ? '#' + orderId : '-';
+
+  // Show payment instructions
+  if (orderId) {
+    var paymentInfo = document.getElementById('payment-info');
+    if (paymentInfo) paymentInfo.classList.remove('hidden');
+  }
+</script>

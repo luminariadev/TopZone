@@ -1,21 +1,90 @@
+<!-- src/components/Navbar.astro -->
 ---
-import Button from '../components/Button.astro';
+import Button from './Button.astro';
+import CartIcon from './CartIcon.astro';
 ---
 
 <header class="border-b-4 border-black bg-white sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+    <!-- Logo -->
     <a href="/" class="text-2xl md:text-3xl font-black tracking-tight hover:skew-x-2 transition-transform inline-block">
-      🎮 TOP<span class="bg-neon-yellow px-2 border-2 border-black shadow-[2px_2px_0px_0px_#000000]" style="color:#000000;">ZONE</span>
+      &#x1F3AE; TOP<span class="bg-neon-yellow px-2 border-2 border-black shadow-[2px_2px_0px_0px_#000000]">ZONE</span>
     </a>
-    <nav class="hidden md:flex space-x-6 items-center">
-      <a href="#hero" class="font-bold hover:text-neon-pink transition-colors">Home</a>
-      <a href="#games" class="font-bold hover:text-neon-pink transition-colors">Games</a>
-      <a href="#gear" class="font-bold hover:text-neon-pink transition-colors">Gear</a>
-      <a href="#promo" class="font-bold hover:text-neon-pink transition-colors">Promo</a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-6">
+      <a href="/#hero" class="font-bold hover:text-neon-pink transition-colors">Home</a>
+      <a href="/#games" class="font-bold hover:text-neon-pink transition-colors">Games</a>
+      <a href="/#gear" class="font-bold hover:text-neon-pink transition-colors">Gear</a>
+      <a href="/#promo" class="font-bold hover:text-neon-pink transition-colors">Promo</a>
+      
     </nav>
-    <div class="flex items-center space-x-3">
-      <Button variant="white" size="sm" class="hidden sm:inline-flex">Sign In</Button>
-      <Button variant="green" size="sm">Get Started</Button>
+
+    <!-- Right: Auth + Cart + Hamburger -->
+    <div class="flex items-center gap-3">
+      <div id="auth-desktop" class="hidden md:flex items-center gap-2"></div>
+      <CartIcon />
+      <button
+        id="hamburger-btn"
+        class="md:hidden flex flex-col gap-[5px] p-2 border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <span class="block w-5 h-0.5 bg-black transition-all duration-200" id="ham-line-1"></span>
+        <span class="block w-5 h-0.5 bg-black transition-all duration-200" id="ham-line-2"></span>
+        <span class="block w-5 h-0.5 bg-black transition-all duration-200" id="ham-line-3"></span>
+      </button>
     </div>
   </div>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t-4 border-black bg-white">
+    <nav class="flex flex-col p-4 gap-3">
+      <a href="/#hero" class="font-bold py-2 border-b-2 border-black/10 hover:text-neon-pink transition-colors">Home</a>
+      <a href="/#games" class="font-bold py-2 border-b-2 border-black/10 hover:text-neon-pink transition-colors">Games</a>
+      <a href="/#gear" class="font-bold py-2 border-b-2 border-black/10 hover:text-neon-pink transition-colors">Gear</a>
+      <a href="/#promo" class="font-bold py-2 border-b-2 border-black/10 hover:text-neon-pink transition-colors">Promo</a>
+      
+      <div id="auth-mobile" class="flex flex-col gap-2 mt-2"></div>
+    </nav>
+  </div>
 </header>
+
+<script>
+  import { user, logoutUser } from '../stores/auth';
+
+  function renderAuth(currentUser) {
+    const desktop = document.getElementById('auth-desktop');
+    const mobile = document.getElementById('auth-mobile');
+    if (!desktop || !mobile) return;
+
+    if (currentUser) {
+      const displayName = currentUser.full_name || currentUser.email || 'User';
+      desktop.innerHTML = '<span class="text-sm font-bold text-gray-500 mr-1">' + displayName + '</span>' +
+        '<a href="/profile" class="px-3 py-1 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Profil</a>' +
+        '<button id="logout-btn-desk" class="px-3 py-1 font-black text-sm border-2 border-black bg-neon-yellow hover:bg-black hover:text-white transition-all">Logout</button>';
+      mobile.innerHTML = '<span class="font-bold text-sm text-gray-500 px-1">' + displayName + '</span>' +
+        '<a href="/profile" class="w-full text-center px-3 py-2 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Profil</a>' +
+        '<button id="logout-btn-mobile" class="w-full px-3 py-2 font-black text-sm border-2 border-black bg-neon-yellow hover:bg-black hover:text-white transition-all">Logout</button>';
+      document.getElementById('logout-btn-desk')?.addEventListener('click', logout);
+      document.getElementById('logout-btn-mobile')?.addEventListener('click', logout);
+    } else {
+      desktop.innerHTML = '<a href="/login" class="px-3 py-1 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Masuk</a>' +
+        '<a href="/register" class="px-3 py-1 font-black text-sm bg-neon-yellow border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all">Daftar</a>';
+      mobile.innerHTML = '<a href="/login" class="w-full text-center px-3 py-2 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Masuk</a>' +
+        '<a href="/register" class="w-full text-center px-3 py-2 font-black text-sm bg-neon-yellow border-2 border-black shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all">Daftar</a>';
+    }
+  }
+
+  function logout() {
+    logoutUser();
+    window.location.href = '/';
+  }
+
+  // Subscribe ke user atom ? auto re-render setiap kali auth state berubah
+  user.subscribe(renderAuth);
+</script>
+
+
+
+
+

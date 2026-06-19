@@ -1,16 +1,39 @@
 <!-- src/components/Marquee.astro -->
 ---
-import '../styles/global.css';
+// Scrolling ticker component
 ---
-<style>
-@keyframes marquee {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-</style>
 
-<div class="overflow-hidden border-4 border-black bg-white py-2">
-  <div class="whitespace-nowrap inline-block animate-[marquee_20s_linear_infinite] text-2xl font-bold text-neon-pink" style="text-shadow: 2px 2px 0 #000;">
-    🎮 New Releases! | ⚙️ Gear Sale! | 🚀 Launch Event! | 🎉 Join the Community!
+<div class="overflow-hidden border-y-4 border-black bg-black py-3 select-none">
+  <div class="marquee-track flex whitespace-nowrap gap-0">
+    {[1, 2].map(() => (
+      <span class="marquee-content inline-flex items-center gap-8 pr-8 text-neon-green font-black text-sm uppercase tracking-widest">
+        <span>🎮 New Game Releases</span>
+        <span class="text-neon-pink">✦</span>
+        <span>⚙️ Gear Sale Up to 30%</span>
+        <span class="text-neon-yellow">✦</span>
+        <span>🚀 Instant Top-Up</span>
+        <span class="text-neon-pink">✦</span>
+        <span>🎉 Use Code: TOPZONE20</span>
+        <span class="text-neon-yellow">✦</span>
+        <span>💎 500K+ Transactions</span>
+        <span class="text-neon-pink">✦</span>
+        <span>🔥 Trusted by 200K Gamers</span>
+        <span class="text-neon-yellow">✦</span>
+      </span>
+    ))}
   </div>
 </div>
+
+<style>
+  @keyframes marquee-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    animation: marquee-scroll 25s linear infinite;
+    width: max-content;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+</style>

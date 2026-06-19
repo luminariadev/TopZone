@@ -1,0 +1,737 @@
+---
+// src/pages/admin.astro
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <!-- Login Gate -->
+  <div id="login-gate" class="min-h-screen flex items-center justify-center bg-neon-yellow py-16 px-4">
+    <div class="w-full max-w-md border-4 border-black bg-white p-8 shadow-[8px_8px_0px_0px_#000]">
+      <div class="text-center mb-6">
+        <div class="text-5xl mb-2">&#x1F512;</div>
+        <h1 class="text-4xl font-black">Admin <span style="color:#39FF14; -webkit-text-stroke:1px #000;">Panel</span></h1>
+        <p class="text-gray-600 font-bold text-sm mt-1">Akses terbatas untuk administrator</p>
+      </div>
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label class="text-sm font-black uppercase tracking-wider mb-2 block">Email</label>
+          <input type="email" id="admin-email" class="w-full px-4 py-3 border-3 border-black font-bold text-lg shadow-[3px_3px_0px_0px_#000] focus:shadow-none focus:translate-x-[2px] focus:translate-y-[2px] outline-none transition-all" placeholder="admin@topzone.com" />
+        </div>
+        <div>
+          <label class="text-sm font-black uppercase tracking-wider mb-2 block">Password</label>
+          <input type="password" id="admin-password" class="w-full px-4 py-3 border-3 border-black font-bold text-lg shadow-[3px_3px_0px_0px_#000] focus:shadow-none focus:translate-x-[2px] focus:translate-y-[2px] outline-none transition-all" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" />
+        </div>
+        <div id="admin-login-error" class="hidden bg-red-500 text-white font-black px-4 py-3 border-2 border-black text-sm text-center"></div>
+        <button type="submit" id="admin-login-btn" class="w-full py-4 font-black uppercase tracking-wider text-lg bg-black text-neon-green border-4 border-black shadow-[4px_4px_0px_0px_#39FF14] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#39FF14] active:translate-y-0 active:shadow-[2px_2px_0px_0px_#39FF14] transition-all">Masuk ke Admin</button>
+      </form>
+      <div class="mt-6 text-center">
+        <a href="/" class="text-sm font-black underline hover:text-neon-pink transition-colors">&larr; Kembali ke Beranda</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="admin-dashboard" class="hidden min-h-screen bg-gray-100">
+    <!-- Admin Top Bar -->
+    <header class="bg-black text-white border-b-4 border-neon-yellow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl font-black tracking-tight">&#x1F3AE; ADMIN</span>
+          <span class="bg-neon-yellow text-black text-xs font-black px-2 py-1">PANEL</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-xs text-gray-400 hidden sm:inline" id="session-timer"></span>
+          <button id="admin-logout" class="px-4 py-2 text-sm font-black border-2 border-neon-yellow text-neon-yellow hover:bg-neon-yellow hover:text-black transition-all">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- Nav Tabs -->
+      <div class="flex flex-wrap gap-2 mb-6 border-b-4 border-black pb-2">
+        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-neon-yellow shadow-[2px_2px_0px_0px_#000]" data-tab="games">&#x1F3AE; Games</button>
+        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]" data-tab="gear">&#x1F3B5; Gear</button>
+        <button class="admin-tab px-6 py-3 font-black tracking-wider border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]" data-tab="orders">&#x1F4E6; Orders</button>
+      </div>
+
+      <!-- GAMES -->
+      <div id="panel-games" class="space-y-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-3xl font-black">&#x1F3AE; Games</h2>
+          <button id="game-add-btn" class="px-5 py-3 font-black border-2 border-black bg-neon-green shadow-[3px_3px_0px_0px_#000] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all">+ Tambah Game</button>
+        </div>
+        <div id="games-list" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+      </div>
+
+      <!-- GEAR -->
+      <div id="panel-gear" class="hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-3xl font-black">&#x1F3B5; Gear</h2>
+          <button id="gear-add-btn" class="px-5 py-3 font-black border-2 border-black bg-neon-yellow shadow-[3px_3px_0px_0px_#000] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all">+ Tambah Gear</button>
+        </div>
+        <div id="gear-list" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="panel-orders" class="hidden space-y-6">
+        <h2 class="text-3xl font-black">&#x1F4E6; Orders</h2>
+        <div class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="border-b-4 border-black bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 font-black text-sm">Order ID</th>
+                <th class="px-4 py-3 font-black text-sm">Pembeli</th>
+                <th class="px-4 py-3 font-black text-sm">Item</th>
+                <th class="px-4 py-3 font-black text-sm">Total</th>
+                <th class="px-4 py-3 font-black text-sm">Status</th>
+                <th class="px-4 py-3 font-black text-sm">Tanggal</th>
+                <th class="px-4 py-3 font-black text-sm">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body"></tbody>
+          </table>
+          <div id="orders-empty" class="text-center py-12 hidden"><p class="text-xl font-black text-gray-400">Belum ada pesanan.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Game -->
+  <div id="game-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white border-4 border-black p-6 w-full max-w-lg shadow-[8px_8px_0px_0px_#000] max-h-[90vh] overflow-y-auto">
+      <h3 class="text-2xl font-black mb-4" id="game-modal-title">Tambah Game</h3>
+      <form id="game-form" class="space-y-3">
+        <input type="hidden" id="game-edit-id" />
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Nama Game</label><input id="game-name" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000] focus:shadow-none focus:translate-x-[1px] focus:translate-y-[1px] outline-none transition-all" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Slug (url)</label><input id="game-slug" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Image Path</label><input id="game-img" value="/assets/mlbb.png" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+        <div class="flex gap-3">
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Color</label><input id="game-color" value="#39FF14" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Badge</label><input id="game-badge" value="New" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Category</label>
+            <select id="game-category" class="w-full px-3 py-2 border-3 border-black font-bold bg-white">
+              <option value="mobile">Mobile</option><option value="pc">PC</option><option value="console">Console</option>
+            </select>
+          </div>
+        </div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Currency</label><input id="game-currency" value="Diamond" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Description</label><textarea id="game-desc" rows="2" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]"></textarea></div>
+        <div class="border-2 border-black p-3 bg-gray-50"><p class="font-black text-sm mb-2">Top-Up Packages</p><div id="game-packages" class="space-y-2"></div><button type="button" id="game-add-pkg" class="mt-2 px-3 py-1 text-xs font-black border border-black hover:bg-black hover:text-white transition-all">+ Add Package</button></div>
+        <div class="flex gap-3 pt-2"><button type="submit" class="flex-1 py-3 font-black bg-neon-green border-2 border-black shadow-[2px_2px_0px_0px_#000]">Save</button><button type="button" id="game-modal-close" class="flex-1 py-3 font-black bg-gray-200 border-2 border-black">Cancel</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Gear -->
+  <div id="gear-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white border-4 border-black p-6 w-full max-w-lg shadow-[8px_8px_0px_0px_#000] max-h-[90vh] overflow-y-auto">
+      <h3 class="text-2xl font-black mb-4" id="gear-modal-title">Tambah Gear</h3>
+      <form id="gear-form" class="space-y-3">
+        <input type="hidden" id="gear-edit-id" />
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Nama Gear</label><input id="gear-name" required class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Slug</label><input id="gear-slug" required class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Image Path</label><input id="gear-img" value="/assets/keyboard.png" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+        <div class="flex gap-3">
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Price</label><input id="gear-price" type="number" required class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Tag</label><input id="gear-tag" value="Gaming" class="w-full px-3 py-2 border-3 border-black font-bold" /></div>
+          <div class="flex-1"><label class="text-xs font-black uppercase tracking-wider block mb-1">Category</label>
+            <select id="gear-category" class="w-full px-3 py-2 border-3 border-black font-bold bg-white">
+              <option value="keyboard">Keyboard</option><option value="mouse">Mouse</option><option value="headset">Headset</option><option value="monitor">Monitor</option>
+            </select>
+          </div>
+        </div>
+        <div><label class="text-xs font-black uppercase tracking-wider block mb-1">Description</label><textarea id="gear-desc" rows="2" class="w-full px-3 py-2 border-3 border-black font-bold shadow-[2px_2px_0px_0px_#000]"></textarea></div>
+        <div class="border-2 border-black p-3 bg-gray-50"><p class="font-black text-sm mb-2">Specifications</p><div id="gear-specs" class="space-y-2"></div><button type="button" id="gear-add-spec" class="mt-2 px-3 py-1 text-xs font-black border border-black hover:bg-black hover:text-white transition-all">+ Add Spec</button></div>
+        <div class="flex gap-3 pt-2"><button type="submit" class="flex-1 py-3 font-black bg-neon-yellow border-2 border-black shadow-[2px_2px_0px_0px_#000]">Save</button><button type="button" id="gear-modal-close" class="flex-1 py-3 font-black bg-gray-200 border-2 border-black">Cancel</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Order Status -->
+  <div id="status-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white border-4 border-black p-6 w-full max-w-sm shadow-[8px_8px_0px_0px_#000]">
+      <h3 class="text-2xl font-black mb-2">Ubah Status</h3>
+      <p class="font-bold mb-4 text-sm text-gray-500" id="modal-order-ref"></p>
+      <select id="modal-status-select" class="w-full px-4 py-3 border-3 border-black font-bold mb-4 bg-white">
+        <option value="pending">Pending</option><option value="processing">Diproses</option><option value="completed">Selesai</option><option value="cancelled">Dibatalkan</option>
+      </select>
+      <div class="flex gap-3">
+        <button id="modal-status-save" class="flex-1 py-3 font-black bg-neon-green border-2 border-black shadow-[2px_2px_0px_0px_#000]">Simpan</button>
+        <button id="modal-status-close" class="flex-1 py-3 font-black bg-gray-200 border-2 border-black">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</Layout>
+
+<script>
+  const ADMIN_EMAIL = 'admin@topzone.com';
+  const ADMIN_PASS = 'admin123';
+  const SESSION_KEY = 'topzone_admin_session';
+  const SESSION_TIME = 30 * 60 * 1000; // 30 menit
+  const STORAGE_GAMES = 'topzone_games';
+  const DEFAULT_GAMES = [
+  {
+    "slug": "mobile-legends",
+    "name": "Mobile Legends",
+    "img": "/assets/mlbb.png",
+    "color": "#39FF14",
+    "badge": "Terlaris",
+    "category": "mobile",
+    "currency": "Diamond",
+    "description": "Top up diamond Mobile Legends Bang Bang dengan harga terbaik. Instan, aman, dan terpercaya.",
+    "packages": [
+      { "id": "mlbb-86", "label": "86 Diamond", "price": 19000 },
+      { "id": "mlbb-172", "label": "172 Diamond", "price": 37000 },
+      { "id": "mlbb-257", "label": "257 Diamond", "price": 55000 },
+      { "id": "mlbb-344", "label": "344 Diamond", "price": 72000 },
+      { "id": "mlbb-514", "label": "514 Diamond", "price": 108000 },
+      { "id": "mlbb-706", "label": "706 Diamond", "price": 147000 }]},
+  {
+    "slug": "valorant",
+    "name": "Valorant",
+    "img": "/assets/valorant.png",
+    "color": "#FF007F",
+    "badge": "Trending",
+    "category": "pc",
+    "currency": "VP",
+    "description": "Beli Valorant Points (VP) untuk unlock agent, skin senjata, dan battle pass favoritmu.",
+    "packages": [
+      { "id": "valo-420", "label": "420 VP", "price": 55000 },
+      { "id": "valo-740", "label": "740 VP", "price": 95000 },
+      { "id": "valo-1200", "label": "1.200 VP", "price": 150000 },
+      { "id": "valo-2050", "label": "2.050 VP", "price": 255000 },
+      { "id": "valo-3650", "label": "3.650 VP", "price": 450000 },
+      { "id": "valo-5350", "label": "5.350 VP", "price": 650000 }]},
+  {
+    "slug": "free-fire",
+    "name": "Free Fire",
+    "img": "/assets/freefire.png",
+    "color": "#FFE600",
+    "badge": "Hot Deal",
+    "category": "mobile",
+    "currency": "Diamond",
+    "description": "Top up diamond Free Fire untuk beli skin karakter, senjata, dan item eksklusif lainnya.",
+    "packages": [
+      { "id": "ff-70", "label": "70 Diamond", "price": 14000 },
+      { "id": "ff-140", "label": "140 Diamond", "price": 27000 },
+      { "id": "ff-355", "label": "355 Diamond", "price": 66000 },
+      { "id": "ff-720", "label": "720 Diamond", "price": 132000 },
+      { "id": "ff-1450", "label": "1.450 Diamond", "price": 260000 },
+      { "id": "ff-2180", "label": "2.180 Diamond", "price": 385000 }]}];
+  const DEFAULT_GEARS = [
+  {
+    "slug": "mechanical-keyboard",
+    "name": "Mechanical Keyboard",
+    "img": "/assets/keyboard.png",
+    "price": 350000,
+    "tag": "RGB Ready",
+    "category": "keyboard",
+    "description": "Keyboard mekanikal 75% compact dengan switch taktil dan RGB per-key. Cocok untuk gaming marathon.",
+    "specs": [
+      { "label": "Layout", "value": "75% Compact" },
+      { "label": "Switch", "value": "Blue Tactile" },
+      { "label": "Backlight", "value": "Per-key RGB" },
+      { "label": "Interface", "value": "USB-C + Wireless" },
+      { "label": "Battery", "value": "4000 mAh" }]},
+  {
+    "slug": "gaming-mouse",
+    "name": "Gaming Mouse",
+    "img": "/assets/mouse.png",
+    "price": 250000,
+    "tag": "12000 DPI",
+    "category": "mouse",
+    "description": "Mouse gaming ergonomis dengan sensor optik presisi tinggi, 7 tombol programmable, dan RGB side strip.",
+    "specs": [
+      { "label": "DPI", "value": "200 – 12.000" },
+      { "label": "Polling Rate", "value": "1000 Hz" },
+      { "label": "Buttons", "value": "7 programmable" },
+      { "label": "Weight", "value": "88g" },
+      { "label": "Interface", "value": "USB 2.0" }]},
+  {
+    "slug": "rgb-headset",
+    "name": "RGB Headset",
+    "img": "/assets/headset.png",
+    "price": 300000,
+    "tag": "Surround Sound",
+    "category": "headset",
+    "description": "Headset gaming dengan virtual 7.1 surround sound, mikrofon noise-cancelling, dan RGB earcup.",
+    "specs": [
+      { "label": "Driver", "value": "50mm Neodymium" },
+      { "label": "Frequency", "value": "20Hz – 20kHz" },
+      { "label": "Microphone", "value": "Noise-cancelling" },
+      { "label": "Audio", "value": "Virtual 7.1 Surround" },
+      { "label": "Interface", "value": "3.5mm + USB" }]}];
+  const STORAGE_GEAR = 'topzone_gears';
+
+  // -------------------------------------------------------
+  // SECURITY: Session Management
+  // -------------------------------------------------------
+
+  function getSession() {
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      if (!s || !s.email || !s.time) return null;
+      const elapsed = Date.now() - s.time;
+      if (elapsed > SESSION_TIME) {
+        localStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+      return s;
+    } catch { return null; }
+  }
+
+  function setSession() {
+    const s = { email: ADMIN_EMAIL, time: Date.now() };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+  }
+
+  function refreshSession() {
+    const s = getSession();
+    if (s) { s.time = Date.now(); localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+  }
+
+  function clearSession() {
+    localStorage.removeItem(SESSION_KEY);
+  }
+
+  // Auto-refresh session on user activity
+  document.addEventListener('click', () => refreshSession());
+  document.addEventListener('keydown', () => refreshSession());
+
+  // Session timer display
+  function updateSessionTimer() {
+    const el = document.getElementById('session-timer');
+    if (!el) return;
+    const s = getSession();
+    if (!s) { el.textContent = ''; return; }
+    const remaining = Math.max(0, SESSION_TIME - (Date.now() - s.time));
+    const min = Math.floor(remaining / 60000);
+    const sec = Math.floor((remaining % 60000) / 1000);
+    el.textContent = 'Sesi: ' + min + 'm ' + sec.toString().padStart(2,'0') + 's';
+  }
+  setInterval(updateSessionTimer, 1000);
+
+  // -------------------------------------------------------
+  // AUTH
+  // -------------------------------------------------------
+
+  let loginAttempts = 0;
+  let loginCooldown = false;
+
+  function showGate() {
+    document.getElementById('login-gate').classList.remove('hidden');
+    document.getElementById('admin-dashboard').classList.add('hidden');
+  }
+
+  function showDashboard() {
+    document.getElementById('login-gate').classList.add('hidden');
+    document.getElementById('admin-dashboard').classList.remove('hidden');
+    renderAll();
+    refreshSession();
+  }
+
+  if (getSession()) { showDashboard(); }
+
+  document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const err = document.getElementById('admin-login-error');
+    const btn = document.getElementById('admin-login-btn');
+
+    if (loginCooldown) {
+      err.textContent = 'Terlalu banyak percobaan. Tunggu beberapa saat.';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    const email = document.getElementById('admin-email').value;
+    const pass = document.getElementById('admin-password').value;
+
+    if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+      loginAttempts = 0;
+      setSession();
+      showDashboard();
+    } else {
+      loginAttempts++;
+      err.textContent = 'Email atau password salah! (Percobaan: ' + loginAttempts + ')';
+      err.classList.remove('hidden');
+      if (loginAttempts >= 5) {
+        loginCooldown = true;
+        btn.disabled = true;
+        btn.textContent = 'Tunggu 30 detik...';
+        setTimeout(() => {
+          loginCooldown = false;
+          loginAttempts = 0;
+          btn.disabled = false;
+          btn.textContent = 'Masuk ke Admin';
+          err.textContent = 'Coba lagi.';
+        }, 30000);
+      }
+    }
+  });
+
+  document.getElementById('admin-logout').addEventListener('click', () => {
+    clearSession();
+    showGate();
+  });
+
+  // -------------------------------------------------------
+  // TAB SWITCHING
+  // -------------------------------------------------------
+
+  document.querySelectorAll('.admin-tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach((b) => { b.style.background = '#fff'; });
+      btn.style.background = '#39FF14';
+      ['games','gear','orders'].forEach((p) => {
+        document.getElementById('panel-' + p).classList.add('hidden');
+      });
+      document.getElementById('panel-' + btn.dataset.tab).classList.remove('hidden');
+    });
+  });
+
+  // -------------------------------------------------------
+  // HELPERS
+  // -------------------------------------------------------
+
+  function formatRp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+
+  function statusBadge(s) {
+    const m = { pending: 'bg-yellow-400', processing: 'bg-blue-400', completed: 'bg-neon-green', cancelled: 'bg-red-400' };
+    const l = { pending: 'Pending', processing: 'Diproses', completed: 'Selesai', cancelled: 'Dibatalkan' };
+    return '<span class="inline-block px-2 py-1 text-xs font-black uppercase tracking-wider border-2 border-black ' + (m[s]||'bg-gray-400') + '">' + (l[s]||s) + '</span>';
+  }
+
+  function randomId() { return Date.now().toString(36) + '-' + Math.random().toString(36).substr(2,6); }
+
+  // -------------------------------------------------------
+  // GAMES CRUD
+  // -------------------------------------------------------
+
+  function getGames() {
+    try {
+      var raw = localStorage.getItem(STORAGE_GAMES);
+      if (raw) { var d = JSON.parse(raw); if (d && d.length > 0) return d; }
+    } catch(e) {}
+    saveGames(DEFAULT_GAMES);
+    return DEFAULT_GAMES;
+  }
+  function saveGames(d) { localStorage.setItem(STORAGE_GAMES, JSON.stringify(d)); }
+
+  function renderGames() {
+    const list = document.getElementById('games-list');
+    const games = getGames();
+    if (games.length === 0) {
+      list.innerHTML = '<div class="col-span-full text-center py-12 border-4 border-dashed border-black"><p class="text-xl font-black text-gray-400">Belum ada game. Klik + Tambah Game untuk mulai.</p></div>';
+      return;
+    }
+    list.innerHTML = games.map((g, i) => '<div class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] p-5">' +
+      '<div class="flex justify-between items-start mb-3">' +
+        '<div><h3 class="text-xl font-black">' + (g.name||'') + '</h3>' +
+        '<p class="text-xs text-gray-500 font-bold">/' + (g.slug||'') + ' &middot; ' + (g.currency||'') + '</p></div>' +
+        '<span class="px-2 py-1 text-xs font-black border-2 border-black" style="background:' + (g.color||'#39FF14') + '">' + (g.badge||'') + '</span></div>' +
+      '<p class="text-sm font-medium text-gray-600 mb-2">' + (g.description||'') + '</p>' +
+      '<p class="text-sm font-bold mb-1">Packages (' + (g.packages||[]).length + ')</p>' +
+      '<div class="text-xs text-gray-500 mb-3">' + (g.packages||[]).map(function(p) { return p.label + ': ' + formatRp(p.price); }).join(', ') + '</div>' +
+      '<div class="flex gap-2"><button class="game-edit px-4 py-2 text-xs font-black border-2 border-black bg-neon-green hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Edit</button>' +
+      '<button class="game-del px-4 py-2 text-xs font-black border-2 border-black bg-red-400 text-white hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Hapus</button></div></div>').join('');
+    list.querySelectorAll('.game-edit').forEach((b) => b.addEventListener('click', function() { openGameModal(parseInt(this.dataset.idx)); }));
+    list.querySelectorAll('.game-del').forEach((b) => b.addEventListener('click', function() { if (confirm('Hapus game ' + (getGames()[parseInt(this.dataset.idx)]||{}).name + '?')) { var g = getGames(); g.splice(parseInt(this.dataset.idx),1); saveGames(g); renderGames(); }}));
+  }
+
+  var gameEditingIdx = -1;
+
+  function openGameModal(idx) {
+    gameEditingIdx = idx;
+    var games = getGames();
+    var g = idx >= 0 ? games[idx] : { name:'', slug:'', img:'/assets/mlbb.png', color:'#39FF14', badge:'New', category:'mobile', currency:'Diamond', description:'', packages:[] };
+    document.getElementById('game-modal-title').textContent = idx >= 0 ? 'Edit Game' : 'Tambah Game';
+    document.getElementById('game-edit-id').value = g.slug || '';
+    document.getElementById('game-name').value = g.name || '';
+    document.getElementById('game-slug').value = g.slug || '';
+    document.getElementById('game-img').value = g.img || '/assets/mlbb.png';
+    document.getElementById('game-color').value = g.color || '#39FF14';
+    document.getElementById('game-badge').value = g.badge || 'New';
+    document.getElementById('game-category').value = g.category || 'mobile';
+    document.getElementById('game-currency').value = g.currency || 'Diamond';
+    document.getElementById('game-desc').value = g.description || '';
+    renderGamePackages(g.packages || []);
+    document.getElementById('game-modal').classList.remove('hidden');
+  }
+
+  function renderGamePackages(pkgs) {
+    var el = document.getElementById('game-packages');
+    el.innerHTML = pkgs.map(function(p, i) { return '<div class="flex gap-2 items-center"><input class="pkg-label flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + (p.label||'') + '" placeholder="Label" /><input class="pkg-price w-28 px-2 py-1 border-2 border-black font-bold text-sm" type="number" value="' + (p.price||0) + '" placeholder="Price" /><button type="button" class="pkg-del px-2 py-1 text-xs font-black border-2 border-black bg-red-400 text-white" data-idx="' + i + '">X</button></div>'; }).join('');
+    el.querySelectorAll('.pkg-del').forEach(function(b) { b.addEventListener('click', function() { var p = getPkgData(); p.splice(parseInt(this.dataset.idx),1); renderGamePackages(p); }); });
+  }
+
+  function getPkgData() {
+    var items = document.querySelectorAll('#game-packages > div');
+    return Array.from(items).map(function(d) { return { label: d.querySelector('.pkg-label').value, price: parseInt(d.querySelector('.pkg-price').value) || 0 }; });
+  }
+
+  document.getElementById('game-add-pkg').addEventListener('click', function() { var p = getPkgData(); p.push({label:'',price:0}); renderGamePackages(p); });
+
+  document.getElementById('game-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var games = getGames();
+    var data = {
+      slug: document.getElementById('game-slug').value,
+      name: document.getElementById('game-name').value,
+      img: document.getElementById('game-img').value,
+      color: document.getElementById('game-color').value,
+      badge: document.getElementById('game-badge').value,
+      category: document.getElementById('game-category').value,
+      currency: document.getElementById('game-currency').value,
+      description: document.getElementById('game-desc').value,
+      packages: getPkgData().filter(function(p) { return p.label; }),
+    };
+    if (gameEditingIdx >= 0) { games[gameEditingIdx] = data; } else { games.push(data); }
+    saveGames(games);
+    document.getElementById('game-modal').classList.add('hidden');
+    renderGames();
+  });
+
+  document.getElementById('game-modal-close').addEventListener('click', function() { document.getElementById('game-modal').classList.add('hidden'); });
+
+  // -------------------------------------------------------
+  // GEAR CRUD
+  // -------------------------------------------------------
+
+  function getGearItems() {
+    try {
+      var raw = localStorage.getItem(STORAGE_GEAR);
+      if (raw) { var d = JSON.parse(raw); if (d && d.length > 0) return d; }
+    } catch(e) {}
+    saveGearItems(DEFAULT_GEARS);
+    return DEFAULT_GEARS;
+  }
+  function saveGearItems(d) { localStorage.setItem(STORAGE_GEAR, JSON.stringify(d)); }
+
+  function renderGear() {
+    var list = document.getElementById('gear-list');
+    var items = getGearItems();
+    if (items.length === 0) {
+      list.innerHTML = '<div class="col-span-full text-center py-12 border-4 border-dashed border-black"><p class="text-xl font-black text-gray-400">Belum ada gear. Klik + Tambah Gear untuk mulai.</p></div>';
+      return;
+    }
+    list.innerHTML = items.map(function(g, i) { return '<div class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] p-5">' +
+      '<div class="flex justify-between items-start mb-3">' +
+        '<div><h3 class="text-xl font-black">' + (g.name||'') + '</h3>' +
+        '<p class="text-xs text-gray-500 font-bold">/' + (g.slug||'') + ' &middot; ' + (g.category||'') + '</p></div>' +
+        '<span class="px-2 py-1 text-xs font-black border-2 border-black bg-neon-yellow">' + (g.tag||'') + '</span></div>' +
+      '<p class="text-sm font-medium text-gray-600 mb-2">' + (g.description||'') + '</p>' +
+      '<p class="text-xl font-black text-neon-pink mb-2">' + formatRp(g.price) + '</p>' +
+      '<p class="text-sm font-bold mb-1">Specs (' + (g.specs||[]).length + ')</p>' +
+      '<div class="text-xs text-gray-500 mb-3">' + (g.specs||[]).map(function(s) { return s.label + ': ' + s.value; }).join(', ') + '</div>' +
+      '<div class="flex gap-2"><button class="gear-edit px-4 py-2 text-xs font-black border-2 border-black bg-neon-green hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Edit</button>' +
+      '<button class="gear-del px-4 py-2 text-xs font-black border-2 border-black bg-red-400 text-white hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all" data-idx="' + i + '">Hapus</button></div></div>'; }).join('');
+    list.querySelectorAll('.gear-edit').forEach(function(b) { b.addEventListener('click', function() { openGearModal(parseInt(this.dataset.idx)); }); });
+    list.querySelectorAll('.gear-del').forEach(function(b) { b.addEventListener('click', function() { if (confirm('Hapus gear ' + (getGearItems()[parseInt(this.dataset.idx)]||{}).name + '?')) { var g = getGearItems(); g.splice(parseInt(this.dataset.idx),1); saveGearItems(g); renderGear(); }}); });
+  }
+
+  var gearEditingIdx = -1;
+
+  function openGearModal(idx) {
+    gearEditingIdx = idx;
+    var items = getGearItems();
+    var g = idx >= 0 ? items[idx] : { name:'', slug:'', img:'/assets/keyboard.png', price:0, tag:'Gaming', category:'keyboard', description:'', specs:[] };
+    document.getElementById('gear-modal-title').textContent = idx >= 0 ? 'Edit Gear' : 'Tambah Gear';
+    document.getElementById('gear-edit-id').value = g.slug || '';
+    document.getElementById('gear-name').value = g.name || '';
+    document.getElementById('gear-slug').value = g.slug || '';
+    document.getElementById('gear-img').value = g.img || '/assets/keyboard.png';
+    document.getElementById('gear-price').value = g.price || 0;
+    document.getElementById('gear-tag').value = g.tag || 'Gaming';
+    document.getElementById('gear-category').value = g.category || 'keyboard';
+    document.getElementById('gear-desc').value = g.description || '';
+    renderGearSpecs(g.specs || []);
+    document.getElementById('gear-modal').classList.remove('hidden');
+  }
+
+  function renderGearSpecs(specs) {
+    var el = document.getElementById('gear-specs');
+    el.innerHTML = specs.map(function(s, i) { return '<div class="flex gap-2 items-center"><input class="spec-label flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + (s.label||'') + '" placeholder="Label" /><input class="spec-val flex-1 px-2 py-1 border-2 border-black font-bold text-sm" value="' + (s.value||'') + '" placeholder="Value" /><button type="button" class="spec-del px-2 py-1 text-xs font-black border-2 border-black bg-red-400 text-white" data-idx="' + i + '">X</button></div>'; }).join('');
+    el.querySelectorAll('.spec-del').forEach(function(b) { b.addEventListener('click', function() { var s = getSpecData(); s.splice(parseInt(this.dataset.idx),1); renderGearSpecs(s); }); });
+  }
+
+  function getSpecData() {
+    var items = document.querySelectorAll('#gear-specs > div');
+    return Array.from(items).map(function(d) { return { label: d.querySelector('.spec-label').value, value: d.querySelector('.spec-val').value }; });
+  }
+
+  document.getElementById('gear-add-spec').addEventListener('click', function() { var s = getSpecData(); s.push({label:'',value:''}); renderGearSpecs(s); });
+
+  document.getElementById('gear-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var items = getGearItems();
+    var data = {
+      slug: document.getElementById('gear-slug').value,
+      name: document.getElementById('gear-name').value,
+      img: document.getElementById('gear-img').value,
+      price: parseInt(document.getElementById('gear-price').value) || 0,
+      tag: document.getElementById('gear-tag').value,
+      category: document.getElementById('gear-category').value,
+      description: document.getElementById('gear-desc').value,
+      specs: getSpecData().filter(function(s) { return s.label; }),
+    };
+    if (gearEditingIdx >= 0) { items[gearEditingIdx] = data; } else { items.push(data); }
+    saveGearItems(items);
+    document.getElementById('gear-modal').classList.add('hidden');
+    renderGear();
+  });
+
+  document.getElementById('gear-modal-close').addEventListener('click', function() { document.getElementById('gear-modal').classList.add('hidden'); });
+
+  // -------------------------------------------------------
+  // ORDERS
+  // -------------------------------------------------------
+
+  function renderOrders() {
+    var orders = getAllOrders();
+    var tbody = document.getElementById('orders-table-body');
+    var empty = document.getElementById('orders-empty');
+    if (orders.length === 0) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    tbody.innerHTML = orders.map(function(o) { return '<tr class="border-b-2 border-black/10 hover:bg-gray-50">' +
+      '<td class="px-4 py-3 font-bold text-sm">' + (o.id||'') + '</td>' +
+      '<td class="px-4 py-3 font-bold">' + (o.name||'') + '</td>' +
+      '<td class="px-4 py-3 text-sm">' + (o.items?o.items.length:0) + ' item</td>' +
+      '<td class="px-4 py-3 font-black text-neon-pink">' + formatRp(o.total) + '</td>' +
+      '<td class="px-4 py-3">' + statusBadge(o.status) + '</td>' +
+      '<td class="px-4 py-3 text-sm text-gray-500">' + (o.createdAt ? new Date(o.createdAt).toLocaleDateString('id-ID') : '-') + '</td>' +
+      '<td class="px-4 py-3"><button class="order-status-edit px-3 py-1 text-xs font-black border-2 border-black hover:bg-black hover:text-white transition-all" data-id="' + (o.id||'') + '">Ubah</button></td></tr>'; }).join('');
+    tbody.querySelectorAll('.order-status-edit').forEach(function(b) { b.addEventListener('click', function() { openStatusModal(this.dataset.id); }); });
+  }
+
+  var editingOrderId = null;
+  function findOrderInAllKeys(id) {
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && (key === 'topzone_orders' || key.startsWith('topzone_orders_'))) {
+        try {
+          var arr = JSON.parse(localStorage.getItem(key));
+          if (arr) {
+            var found = arr.find(function(x) { return x.id === id; });
+            if (found) return { order: found, key: key, arr: arr };
+          }
+        } catch(e) {}
+      }
+    }
+    return null;
+  }
+  function openStatusModal(id) {
+    editingOrderId = id;
+    var result = findOrderInAllKeys(id);
+    if (!result) return;
+    document.getElementById('modal-order-ref').textContent = 'Order #' + id;
+    document.getElementById('modal-status-select').value = result.order.status;
+    document.getElementById('status-modal').classList.remove('hidden');
+  }
+  document.getElementById('modal-status-close').addEventListener('click', function() { document.getElementById('status-modal').classList.add('hidden'); });
+  document.getElementById('modal-status-save').addEventListener('click', function() {
+    if (!editingOrderId) return;
+    var ns = document.getElementById('modal-status-select').value;
+    var result = findOrderInAllKeys(editingOrderId);
+    if (!result) return;
+    result.arr = result.arr.map(function(o) { return o.id === editingOrderId ? { ...o, status: ns } : o; });
+    localStorage.setItem(result.key, JSON.stringify(result.arr));
+    document.getElementById('status-modal').classList.add('hidden');
+    renderOrders();
+  });
+
+  // -------------------------------------------------------
+  // INIT
+  // -------------------------------------------------------
+
+    function getAllOrders() {
+    // Collect orders from all user accounts
+    var allOrders = [];
+    try {
+      // Check default key (anonymous)
+      try { var d = JSON.parse(localStorage.getItem('topzone_orders')); if (d) allOrders = allOrders.concat(d); } catch(e) {}
+      // Check user-specific keys
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.startsWith('topzone_orders_')) {
+          try { var d = JSON.parse(localStorage.getItem(key)); if (d) allOrders = allOrders.concat(d); } catch(e) {}
+        }
+      }
+    } catch(e) {}
+    // Sort by date descending
+    allOrders.sort(function(a, b) { return new Date(b.createdAt) - new Date(a.createdAt); });
+    return allOrders;
+  }
+
+  // -------------------------------------------------------
+  // LAPORAN
+  // -------------------------------------------------------
+
+  function renderLaporan() {
+    var orders = getAllOrders();
+    var totalOrders = orders.length;
+    var totalRevenue = orders.reduce(function(s, o) { return s + (o.total || 0); }, 0);
+    var pending = orders.filter(function(o) { return o.status === 'pending'; }).length;
+    var completed = orders.filter(function(o) { return o.status === 'completed'; }).length;
+
+    document.getElementById('laporan-total-orders').textContent = totalOrders;
+    document.getElementById('laporan-total-revenue').textContent = 'Rp ' + totalRevenue.toLocaleString('id-ID');
+    document.getElementById('laporan-pending').textContent = pending;
+    document.getElementById('laporan-completed').textContent = completed;
+
+    var tbody = document.getElementById('laporan-table-body');
+    var empty = document.getElementById('laporan-empty');
+    if (orders.length === 0) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    tbody.innerHTML = orders.map(function(o) {
+      return '<tr class="border-b-2 border-black/10 hover:bg-gray-50">' +
+        '<td class="px-4 py-3 font-bold text-sm">' + (o.id||'') + '</td>' +
+        '<td class="px-4 py-3 font-bold text-sm">' + (o.name||'') + '</td>' +
+        '<td class="px-4 py-3 text-sm">' + (o.items?o.items.length:0) + ' item</td>' +
+        '<td class="px-4 py-3 font-black text-neon-pink text-sm">' + formatRp(o.total) + '</td>' +
+        '<td class="px-4 py-3">' + statusBadge(o.status) + '</td>' +
+        '<td class="px-4 py-3 text-xs text-gray-500">' + (o.createdAt ? new Date(o.createdAt).toLocaleDateString('id-ID') : '-') + '</td></tr>';
+    }).join('');
+  }
+
+  // EXPORT CSV
+  document.getElementById('export-csv')?.addEventListener('click', function() {
+    var orders = getAllOrders();
+    if (orders.length === 0) { alert('Tidak ada data transaksi untuk di-export.'); return; }
+    var csv = '\uFEFFID Order,Pelanggan,Email,Item,Total,Status,Pembayaran,Tanggal\n';
+    orders.forEach(function(o) {
+      csv += (o.id||'') + ',' + (o.name||'').replace(/,/g,' ') + ',' + (o.userEmail||'') + ',' + (o.items?o.items.length:0) + ' item' + ',' + (o.total||0) + ',' + (o.status||'') + ',' + (o.payment||'') + ',' + (o.createdAt||'') + '\n';
+    });
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'topzone-laporan-' + new Date().toISOString().slice(0,10) + '.csv';
+    link.click();
+    alert('Laporan berhasil di-download!');
+  });
+
+  function renderAll() {
+    renderGames();
+    renderGear();
+    renderOrders();
+    renderLaporan();
+  }
+
+  // Close modals on overlay click
+  document.querySelectorAll('.fixed.inset-0').forEach(function(m) {
+    m.addEventListener('click', function(e) { if (e.target === m) m.classList.add('hidden'); });
+  });
+</script>
+
