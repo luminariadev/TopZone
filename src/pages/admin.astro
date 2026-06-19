@@ -671,10 +671,62 @@ import Footer from '../components/Footer.astro';
     return allOrders;
   }
 
+  // -------------------------------------------------------
+  // LAPORAN
+  // -------------------------------------------------------
+
+  function renderLaporan() {
+    var orders = getAllOrders();
+    var totalOrders = orders.length;
+    var totalRevenue = orders.reduce(function(s, o) { return s + (o.total || 0); }, 0);
+    var pending = orders.filter(function(o) { return o.status === 'pending'; }).length;
+    var completed = orders.filter(function(o) { return o.status === 'completed'; }).length;
+
+    document.getElementById('laporan-total-orders').textContent = totalOrders;
+    document.getElementById('laporan-total-revenue').textContent = 'Rp ' + totalRevenue.toLocaleString('id-ID');
+    document.getElementById('laporan-pending').textContent = pending;
+    document.getElementById('laporan-completed').textContent = completed;
+
+    var tbody = document.getElementById('laporan-table-body');
+    var empty = document.getElementById('laporan-empty');
+    if (orders.length === 0) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    tbody.innerHTML = orders.map(function(o) {
+      return '<tr class="border-b-2 border-black/10 hover:bg-gray-50">' +
+        '<td class="px-4 py-3 font-bold text-sm">' + (o.id||'') + '</td>' +
+        '<td class="px-4 py-3 font-bold text-sm">' + (o.name||'') + '</td>' +
+        '<td class="px-4 py-3 text-sm">' + (o.items?o.items.length:0) + ' item</td>' +
+        '<td class="px-4 py-3 font-black text-neon-pink text-sm">' + formatRp(o.total) + '</td>' +
+        '<td class="px-4 py-3">' + statusBadge(o.status) + '</td>' +
+        '<td class="px-4 py-3 text-xs text-gray-500">' + (o.createdAt ? new Date(o.createdAt).toLocaleDateString('id-ID') : '-') + '</td></tr>';
+    }).join('');
+  }
+
+  // EXPORT CSV
+  document.getElementById('export-csv')?.addEventListener('click', function() {
+    var orders = getAllOrders();
+    if (orders.length === 0) { alert('Tidak ada data transaksi untuk di-export.'); return; }
+    var csv = '\uFEFFID Order,Pelanggan,Email,Item,Total,Status,Pembayaran,Tanggal\n';
+    orders.forEach(function(o) {
+      csv += (o.id||'') + ',' + (o.name||'').replace(/,/g,' ') + ',' + (o.userEmail||'') + ',' + (o.items?o.items.length:0) + ' item' + ',' + (o.total||0) + ',' + (o.status||'') + ',' + (o.payment||'') + ',' + (o.createdAt||'') + '\n';
+    });
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'topzone-laporan-' + new Date().toISOString().slice(0,10) + '.csv';
+    link.click();
+    alert('Laporan berhasil di-download!');
+  });
+
   function renderAll() {
     renderGames();
     renderGear();
     renderOrders();
+    renderLaporan();
   }
 
   // Close modals on overlay click
