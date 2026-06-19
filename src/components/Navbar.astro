@@ -17,7 +17,7 @@ import CartIcon from './CartIcon.astro';
       <a href="/#games" class="font-bold hover:text-neon-pink transition-colors">Games</a>
       <a href="/#gear" class="font-bold hover:text-neon-pink transition-colors">Gear</a>
       <a href="/#promo" class="font-bold hover:text-neon-pink transition-colors">Promo</a>
-      <a href="/orders" class="font-bold hover:text-neon-pink transition-colors">Pesanan</a>
+      <a href="/profile" class="font-bold hover:text-neon-pink transition-colors">Profil</a>
     </nav>
 
     <!-- Right: Auth + Cart + Hamburger -->
@@ -43,7 +43,7 @@ import CartIcon from './CartIcon.astro';
       <a href="/#games" class="font-bold py-2 border-b-2 border-black/10 hover:text-neon-pink transition-colors">Games</a>
       <a href="/#gear" class="font-bold py-2 border-b-2 border-black/10 hover:text-neon-pink transition-colors">Gear</a>
       <a href="/#promo" class="font-bold py-2 border-b-2 border-black/10 hover:text-neon-pink transition-colors">Promo</a>
-      <a href="/orders" class="font-bold hover:text-neon-pink transition-colors">Pesanan</a>
+      <a href="/profile" class="font-bold hover:text-neon-pink transition-colors">Profil</a>
       <div id="auth-mobile" class="flex flex-col gap-2 mt-2"></div>
     </nav>
   </div>
@@ -60,10 +60,10 @@ import CartIcon from './CartIcon.astro';
     if (currentUser) {
       const displayName = currentUser.full_name || currentUser.email || 'User';
       desktop.innerHTML = '<span class="text-sm font-bold text-gray-500 mr-1">' + displayName + '</span>' +
-        '<a href="/orders" class="px-3 py-1 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Pesanan</a>' +
+        '<a href="/profile" class="px-3 py-1 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Profil</a>' +
         '<button id="logout-btn-desk" class="px-3 py-1 font-black text-sm border-2 border-black bg-neon-yellow hover:bg-black hover:text-white transition-all">Logout</button>';
       mobile.innerHTML = '<span class="font-bold text-sm text-gray-500 px-1">' + displayName + '</span>' +
-        '<a href="/orders" class="w-full text-center px-3 py-2 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Pesanan</a>' +
+        '<a href="/profile" class="w-full text-center px-3 py-2 font-black text-sm border-2 border-black hover:bg-black hover:text-white transition-all">Profil</a>' +
         '<button id="logout-btn-mobile" class="w-full px-3 py-2 font-black text-sm border-2 border-black bg-neon-yellow hover:bg-black hover:text-white transition-all">Logout</button>';
       document.getElementById('logout-btn-desk')?.addEventListener('click', logout);
       document.getElementById('logout-btn-mobile')?.addEventListener('click', logout);
