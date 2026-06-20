@@ -1,0 +1,65 @@
+---
+// src/components/Toast.astro
+// Toast notification component for user feedback
+---
+
+<div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2"></div>
+
+<style>
+  @keyframes toast-slide-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toast-slide-out {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+  }
+  .toast-item {
+    animation: toast-slide-in 0.3s ease-out forwards;
+  }
+  .toast-item.removing {
+    animation: toast-slide-out 0.3s ease-in forwards;
+  }
+</style>
+
+<script>
+  interface ToastOptions {
+    message: string;
+    type?: 'success' | 'error' | 'info' | 'warning';
+    duration?: number;
+  }
+
+  const ICONS: Record<string, string> = {
+    success: '✓',
+    error: '✕',
+    info: 'ℹ',
+    warning: '⚠',
+  };
+
+  const COLORS: Record<string, string> = {
+    success: 'bg-neon-green text-black border-neon-green',
+    error: 'bg-red-500 text-white border-red-600',
+    info: 'bg-white text-black border-black',
+    warning: 'bg-neon-yellow text-black border-yellow-400',
+  };
+
+  export function showToast(message: string, type: string = 'success', duration: number = 3000) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    const colorClass = COLORS[type] || COLORS.info;
+    const icon = ICONS[type] || ICONS.info;
+
+    toast.className = `toast-item flex items-center gap-3 px-5 py-3 border-4 border-black shadow-[4px_4px_0px_0px_#000] font-black text-sm ${colorClass}`;
+    toast.innerHTML = `<span class="text-lg">${icon}</span> ${message}`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('removing');
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+
+  (window as any).showToast = showToast;
+</script>
