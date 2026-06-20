@@ -1,0 +1,64 @@
+---
+export interface Props {
+  id: string;
+  name: string;
+  img: string;
+  price: number;
+  type: 'game' | 'gear';
+  slug: string;
+}
+
+const { id, name, img, price, type, slug } = Astro.props;
+---
+
+<button
+  class="wishlist-btn p-2 border-2 border-black bg-white hover:bg-neon-pink hover:text-white transition-all shadow-[2px_2px_0px_0px_#000]"
+  data-id={id}
+  data-name={name}
+  data-img={img}
+  data-price={price}
+  data-type={type}
+  data-slug={slug}
+  aria-label="Tambah ke wishlist"
+>
+  <svg class="w-5 h-5 wishlist-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+  </svg>
+</button>
+
+<script>
+  import { toggleWishlist, isInWishlist } from '../stores/wishlist';
+
+  function initWishlistButtons() {
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+      const el = btn as HTMLButtonElement;
+      const id = el.dataset.id!;
+      const name = el.dataset.name!;
+      const img = el.dataset.img!;
+      const price = parseFloat(el.dataset.price || '0');
+      const type = el.dataset.type as 'game' | 'gear';
+      const slug = el.dataset.slug!;
+
+      if (isInWishlist(id)) {
+        el.classList.add('bg-neon-pink', 'text-white');
+        el.classList.remove('bg-white');
+      }
+
+      el.addEventListener('click', () => {
+        const added = toggleWishlist({ id, name, img, price, type, slug });
+        if (added) {
+          el.classList.add('bg-neon-pink', 'text-white');
+          el.classList.remove('bg-white');
+          (window as any).showToast?.('Ditambahkan ke wishlist!', 'success', 2000);
+        } else {
+          el.classList.remove('bg-neon-pink', 'text-white');
+          el.classList.add('bg-white');
+          (window as any).showToast?.('Dihapus dari wishlist', 'info', 2000);
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initWishlistButtons);
+  initWishlistButtons();
+</script>
