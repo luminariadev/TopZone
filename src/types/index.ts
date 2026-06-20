@@ -1,0 +1,183 @@
+// src/types/index.ts
+// Centralized TypeScript type definitions for TopZone
+
+/**
+ * User authentication types
+ */
+export interface AppUser {
+  email: string;
+  full_name?: string;
+  isLoggedIn: boolean;
+}
+
+/**
+ * Game and Game Package types
+ */
+export interface GamePackage {
+  id: string;
+  label: string;
+  price: number;
+}
+
+export interface Game {
+  slug: string;
+  name: string;
+  img: string;
+  color: string;
+  badge: string;
+  category: 'mobile' | 'pc' | 'console';
+  currency: string;
+  description: string;
+  packages: GamePackage[];
+}
+
+/**
+ * Gear types
+ */
+export interface GearSpec {
+  label: string;
+  value: string;
+}
+
+export interface Gear {
+  slug: string;
+  name: string;
+  img: string;
+  price: number;
+  tag: string;
+  category: 'keyboard' | 'mouse' | 'headset' | 'monitor';
+  description: string;
+  specs: GearSpec[];
+}
+
+/**
+ * Cart types
+ */
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  qty: number;
+  img: string;
+  type: 'game' | 'gear';
+}
+
+/**
+ * Order types
+ */
+export interface OrderItem {
+  id?: string;
+  product_id?: string;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+  type: 'game' | 'gear';
+}
+
+export interface Order {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  payment: 'bank' | 'ewallet' | 'gopay';
+  items: OrderItem[];
+  total: number;
+  status: 'pending' | 'processing' | 'completed' | 'cancelled';
+  createdAt: string;
+  updatedAt?: string;
+}
+
+/**
+ * Review types
+ */
+export interface Review {
+  id: string;
+  productSlug: string;
+  rating: number; // 1-5
+  comment: string;
+  userName: string;
+  userEmail: string;
+  createdAt: string;
+}
+
+/**
+ * Voucher types
+ */
+export interface Voucher {
+  code: string;
+  discount: number; // percentage (e.g., 10 for 10%)
+  used: boolean;
+  createdAt: string;
+}
+
+/**
+ * Admin session types
+ */
+export interface AdminSession {
+  token: string;
+  expiresAt: number; // timestamp
+  failedAttempts: number;
+  lockedUntil?: number;
+}
+
+/**
+ * Admin product types (stored in localStorage)
+ */
+export interface AdminGame {
+  id?: string;
+  slug: string;
+  name: string;
+  img: string;
+  color: string;
+  badge: string;
+  category: 'mobile' | 'pc' | 'console';
+  currency: string;
+  description: string;
+  packages: GamePackage[];
+}
+
+export interface AdminGear {
+  id?: string;
+  slug: string;
+  name: string;
+  img: string;
+  price: number;
+  tag: string;
+  category: 'keyboard' | 'mouse' | 'headset' | 'monitor';
+  description: string;
+  specs: GearSpec[];
+}
+
+/**
+ * Product union type for filtering/searching
+ */
+export type Product = Game | Gear;
+
+/**
+ * Filter options for products
+ */
+export interface ProductFilters {
+  category?: string;
+  searchQuery?: string;
+  sortBy?: 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
+}
+
+/**
+ * Toast notification types
+ */
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+export interface ToastOptions {
+  message: string;
+  type: ToastType;
+  duration?: number; // milliseconds
+}
+
+/**
+ * Breadcrumb item type
+ */
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+  isCurrent?: boolean;
+}
