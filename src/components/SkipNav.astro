@@ -1,0 +1,19 @@
+---
+/**
+ * Skip Navigation Component
+ * Allows keyboard users to skip directly to main content.
+ * Visible on focus only, neubrutalism styled.
+ */
+interface Props {
+  targetId?: string;
+}
+
+const { targetId = 'main-content' } = Astro.props;
+---
+
+<a
+  href={`#${targetId}`}
+  class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[9999] focus:px-6 focus:py-3 focus:bg-black focus:text-neon-green focus:font-black focus:text-sm focus:uppercase focus:tracking-wider focus:border-4 focus:border-neon-green focus:shadow-[4px_4px_0px_0px_#39FF14] focus:outline-none"
+>
+  Lompat ke konten utama
+</a>

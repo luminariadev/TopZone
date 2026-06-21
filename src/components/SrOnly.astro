@@ -1,0 +1,17 @@
+---
+/**
+ * Screen Reader Only Utility Component
+ * Wraps content that should only be visible to screen readers.
+ * Use for accessible labels, descriptions, and additional context.
+ */
+interface Props {
+  as?: 'span' | 'div' | 'p' | 'h2' | 'h3' | 'h4';
+  id?: string;
+}
+
+const { as: Tag = 'span', id } = Astro.props;
+---
+
+<Tag id={id} class="sr-only">
+  <slot />
+</Tag>

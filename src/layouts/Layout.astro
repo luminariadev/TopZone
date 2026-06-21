@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import SkipNav from '../components/SkipNav.astro';
 
 export interface Props {
   title?: string;
@@ -43,12 +44,15 @@ const {
 
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="TopZone" />
+		<link rel="apple-touch-icon" href="/favicon.svg" />
 		<title>{title}</title>
 	</head>
 	<body>
-		<a href="#main-content" class="skip-link sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-black focus:text-neon-green focus:font-black focus:border-2 focus:border-neon-green">
-			Lompat ke konten utama
-		</a>
+		<SkipNav targetId="main-content" />
 		<main id="main-content">
 			<slot />
 		</main>
