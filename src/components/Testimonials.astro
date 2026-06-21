@@ -1,0 +1,128 @@
+---
+/**
+ * Testimonials / Social Proof Component
+ * Customer review cards with star ratings, platform badges, neubrutalism grid layout.
+ */
+interface Testimonial {
+  name: string;
+  rating: number;
+  comment: string;
+  platform: string;
+  platformColor: string;
+  avatarInitial: string;
+  avatarBg: string;
+}
+
+const testimonials: Testimonial[] = [
+  {
+    name: 'Rizky Pratama',
+    rating: 5,
+    comment: 'Top up ML diamonds super cepat! Masuk dalam 2 detik. TopZone emang paling reliable buat top up game.',
+    platform: 'Mobile Legends',
+    platformColor: '#39FF14',
+    avatarInitial: 'RP',
+    avatarBg: '#39FF14',
+  },
+  {
+    name: 'Anisa Putri',
+    rating: 5,
+    comment: 'Keyboard mechanical yang aku beli original 100%. Packaging rapi, harga lebih murah dari toko lain. Recommended!',
+    platform: 'PC Gaming',
+    platformColor: '#FF007F',
+    avatarInitial: 'AP',
+    avatarBg: '#FF007F',
+  },
+  {
+    name: 'Dimas Aditya',
+    rating: 4,
+    comment: 'Valorant Points masuk langsung. Customer service ramah dan fast response. Cuma agak lama pas jam ramai.',
+    platform: 'Valorant',
+    platformColor: '#FFFF00',
+    avatarInitial: 'DA',
+    avatarBg: '#FFFF00',
+  },
+  {
+    name: 'Sarah Wijaya',
+    rating: 5,
+    comment: 'Beli headset SteelSeries di sini. Garansi resmi, harga bersahabat. Free shipping juga! Top banget.',
+    platform: 'Console Gaming',
+    platformColor: '#39FF14',
+    avatarInitial: 'SW',
+    avatarBg: '#39FF14',
+  },
+  {
+    name: 'Farhan Hidayat',
+    rating: 5,
+    comment: 'Free Fire diamonds paling murah di TopZone. Sering ada promo juga. Udah jadi langganan buat top up.',
+    platform: 'Free Fire',
+    platformColor: '#FF007F',
+    avatarInitial: 'FH',
+    avatarBg: '#FF007F',
+  },
+  {
+    name: 'Maya Sari',
+    rating: 4,
+    comment: 'Pembayaran gampang banget, bisa pakai GoPay. Prosesnya cepat dan ada notif juga. Overall puas!',
+    platform: 'Mobile Legends',
+    platformColor: '#FFFF00',
+    avatarInitial: 'MS',
+    avatarBg: '#FFFF00',
+  },
+];
+---
+
+<section class="py-16 bg-white border-t-4 border-black" aria-labelledby="testimonials-heading">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <h2 id="testimonials-heading" class="text-5xl font-black uppercase tracking-tighter mb-3">
+        What <span class="bg-neon-yellow px-2 border-2 border-black">Gamers</span> Say
+      </h2>
+      <p class="text-gray-600 font-bold text-lg">Ribuan gamers udah trust TopZone. Sekarang giliran kamu!</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {testimonials.map((t) => (
+        <article class="border-4 border-black bg-white dark:bg-gray-900 shadow-[4px_4px_0px_0px_#000] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000] transition-all duration-150 p-6">
+          <!-- Stars -->
+          <div class="flex gap-1 mb-3" aria-label={`${t.rating} out of 5 stars`}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg
+                class={`w-5 h-5 ${i < t.rating ? 'text-black' : 'text-gray-300'}`}
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+
+          <!-- Comment -->
+          <p class="text-gray-700 font-medium mb-4 leading-relaxed">
+            "{t.comment}"
+          </p>
+
+          <!-- Author -->
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 flex items-center justify-center border-2 border-black font-black text-sm text-black shadow-[2px_2px_0px_0px_#000]"
+              style={`background:${t.avatarBg};`}
+              aria-hidden="true"
+            >
+              {t.avatarInitial}
+            </div>
+            <div>
+              <p class="font-black text-sm">{t.name}</p>
+              <span
+                class="inline-block px-2 py-0.5 text-xs font-black uppercase tracking-wider border-2 border-black shadow-[1px_1px_0px_0px_#000]"
+                style={`background:${t.platformColor};`}
+              >
+                {t.platform}
+              </span>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
