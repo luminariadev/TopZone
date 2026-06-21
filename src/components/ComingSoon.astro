@@ -1,0 +1,112 @@
+---
+/**
+ * Coming Soon Countdown Component
+ * Displays a countdown timer to a target date with neubrutalism styling.
+ * Days, hours, minutes, seconds display with animated boxes.
+ */
+const TARGET_DATE = new Date('2026-08-01T00:00:00').getTime();
+---
+
+<section class="py-20 bg-neon-yellow border-t-4 border-b-4 border-black" aria-labelledby="coming-soon-heading">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="border-4 border-black shadow-[8px_8px_0px_0px_#000] p-12 bg-white">
+      <span class="inline-block mb-4 px-4 py-1 bg-black text-neon-yellow font-black text-sm uppercase tracking-widest border-2 border-black">
+        Coming Soon
+      </span>
+      <h2 id="coming-soon-heading" class="text-4xl md:text-5xl font-black uppercase mb-3">
+        Big <span class="bg-neon-pink px-2 border-2 border-black text-white">Update</span> is Coming!
+      </h2>
+      <p class="text-gray-600 font-bold text-lg mb-8 max-w-xl mx-auto">
+        Fitur baru yang epik akan segera hadir. Pantau terus dan jangan sampai ketinggalan!
+      </p>
+
+      <!-- Countdown Timer -->
+      <div class="countdown-container flex justify-center gap-3 md:gap-4 mb-8" role="timer" aria-live="polite" aria-label="Countdown timer">
+        <div class="countdown-block flex flex-col items-center">
+          <div class="w-16 h-16 md:w-24 md:h-24 border-4 border-black bg-neon-green shadow-[4px_4px_0px_0px_#000] flex items-center justify-center mb-2">
+            <span id="cd-days" class="font-black text-3xl md:text-5xl text-black">00</span>
+          </div>
+          <span class="font-black text-xs uppercase tracking-wider text-black">Days</span>
+        </div>
+
+        <span class="font-black text-3xl md:text-5xl text-black mt-1 md:mt-2" aria-hidden="true">:</span>
+
+        <div class="countdown-block flex flex-col items-center">
+          <div class="w-16 h-16 md:w-24 md:h-24 border-4 border-black bg-neon-pink shadow-[4px_4px_0px_0px_#000] flex items-center justify-center mb-2">
+            <span id="cd-hours" class="font-black text-3xl md:text-5xl text-black">00</span>
+          </div>
+          <span class="font-black text-xs uppercase tracking-wider text-black">Hours</span>
+        </div>
+
+        <span class="font-black text-3xl md:text-5xl text-black mt-1 md:mt-2" aria-hidden="true">:</span>
+
+        <div class="countdown-block flex flex-col items-center">
+          <div class="w-16 h-16 md:w-24 md:h-24 border-4 border-black bg-neon-yellow shadow-[4px_4px_0px_0px_#000] flex items-center justify-center mb-2">
+            <span id="cd-minutes" class="font-black text-3xl md:text-5xl text-black">00</span>
+          </div>
+          <span class="font-black text-xs uppercase tracking-wider text-black">Min</span>
+        </div>
+
+        <span class="font-black text-3xl md:text-5xl text-black mt-1 md:mt-2" aria-hidden="true">:</span>
+
+        <div class="countdown-block flex flex-col items-center">
+          <div class="w-16 h-16 md:w-24 md:h-24 border-4 border-black bg-white shadow-[4px_4px_0px_0px_#000] flex items-center justify-center mb-2">
+            <span id="cd-seconds" class="font-black text-3xl md:text-5xl text-black">00</span>
+          </div>
+          <span class="font-black text-xs uppercase tracking-wider text-black">Sec</span>
+        </div>
+      </div>
+
+      <p id="cd-complete" class="hidden font-black text-2xl text-neon-pink uppercase tracking-wider mb-6">
+        Launching Now!
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const TARGET_DATE = new Date('2026-08-01T00:00:00').getTime();
+
+  function padZero(num: number): string {
+    return num < 10 ? `0${num}` : `${num}`;
+  }
+
+  function updateCountdown(): void {
+    const now = Date.now();
+    const diff = TARGET_DATE - now;
+
+    if (diff <= 0) {
+      const daysEl = document.getElementById('cd-days');
+      const hoursEl = document.getElementById('cd-hours');
+      const minsEl = document.getElementById('cd-minutes');
+      const secsEl = document.getElementById('cd-seconds');
+      const completeEl = document.getElementById('cd-complete');
+
+      if (daysEl) daysEl.textContent = '00';
+      if (hoursEl) hoursEl.textContent = '00';
+      if (minsEl) minsEl.textContent = '00';
+      if (secsEl) secsEl.textContent = '00';
+      if (completeEl) completeEl.classList.remove('hidden');
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    const daysEl = document.getElementById('cd-days');
+    const hoursEl = document.getElementById('cd-hours');
+    const minsEl = document.getElementById('cd-minutes');
+    const secsEl = document.getElementById('cd-seconds');
+
+    if (daysEl) daysEl.textContent = padZero(days);
+    if (hoursEl) hoursEl.textContent = padZero(hours);
+    if (minsEl) minsEl.textContent = padZero(minutes);
+    if (secsEl) secsEl.textContent = padZero(seconds);
+  }
+
+  // Initialize immediately and start interval
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
