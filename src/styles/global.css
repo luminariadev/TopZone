@@ -42,6 +42,15 @@ html.dark .border-2 { border-color: #444; }
 html.dark input,
 html.dark .bg-white { background-color: #1a1a1a; color: #f0f0f0; }
 
+/* Focus visible styles for accessibility (light & dark) */
+:focus-visible {
+  outline: 3px solid #39FF14;
+  outline-offset: 2px;
+}
+html.dark :focus-visible {
+  outline-color: #FF007F;
+}
+
 /* Base typography presets for Neubrutalism */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
