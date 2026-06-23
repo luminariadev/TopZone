@@ -6,7 +6,7 @@ import ThemeToggle from './ThemeToggle.astro';
 import SearchBar from './SearchBar.astro';
 ---
 
-<header class="border-b-4 border-black bg-white sticky top-0 z-50">
+<header class="border-b-4 border-black bg-white sticky top-0 z-50 dark:bg-gray-900 dark:border-gray-700">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
     <!-- Logo -->
     <a href="/" class="text-2xl md:text-3xl font-black tracking-tight hover:skew-x-2 transition-transform inline-block">
@@ -32,6 +32,7 @@ import SearchBar from './SearchBar.astro';
         class="md:hidden flex flex-col gap-[5px] p-2 border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
         aria-label="Toggle menu"
         aria-expanded="false"
+        aria-controls="mobile-menu"
       >
         <span class="block w-5 h-0.5 bg-black transition-all duration-200" id="ham-line-1"></span>
         <span class="block w-5 h-0.5 bg-black transition-all duration-200" id="ham-line-2"></span>
@@ -83,8 +84,52 @@ import SearchBar from './SearchBar.astro';
     window.location.href = '/';
   }
 
+  // Mobile hamburger menu toggle
+  function initMobileMenu() {
+    const btn = document.getElementById('hamburger-btn');
+    const menu = document.getElementById('mobile-menu');
+    const line1 = document.getElementById('ham-line-1');
+    const line2 = document.getElementById('ham-line-2');
+    const line3 = document.getElementById('ham-line-3');
+    if (!btn || !menu) return;
+
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      menu.classList.toggle('hidden');
+
+      // Animate hamburger → X
+      if (line1 && line2 && line3) {
+        if (!open) {
+          line1.style.transform = 'rotate(45deg) translate(4px, 4px)';
+          line2.style.opacity = '0';
+          line3.style.transform = 'rotate(-45deg) translate(4px, -4px)';
+        } else {
+          line1.style.transform = '';
+          line2.style.opacity = '';
+          line3.style.transform = '';
+        }
+      }
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!btn.contains(e.target as Node) && !menu.contains(e.target as Node)) {
+        btn.setAttribute('aria-expanded', 'false');
+        menu.classList.add('hidden');
+        if (line1 && line2 && line3) {
+          line1.style.transform = '';
+          line2.style.opacity = '';
+          line3.style.transform = '';
+        }
+      }
+    });
+  }
+
   // Subscribe ke user atom ? auto re-render setiap kali auth state berubah
   user.subscribe(renderAuth);
+  document.addEventListener('astro:page-load', initMobileMenu);
+  initMobileMenu();
 </script>
 
 
