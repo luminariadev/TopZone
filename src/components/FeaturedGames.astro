@@ -1,6 +1,7 @@
 <!-- src/components/FeaturedGames.astro -->
 ---
 import { fetchGames } from '../lib/products';
+import Loading from './Loading.astro';
 const games = await fetchGames();
 ---
 <section id="games" class="py-20 bg-white text-black border-t-4 border-black">
@@ -18,27 +19,31 @@ const games = await fetchGames();
         </button>
       ))}
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="games-grid">
-      {games.map((game) => (
-        <article class="game-card group border-4 border-black bg-white shadow-[6px_6px_0px_0px_#000] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#000] transition-all duration-150" data-category={game.category}>
-          <a href={`/games/${game.slug}`} class="block">
-            <div class="relative">
-              <img src={game.img} alt={game.name} loading="lazy" decoding="async" class="w-full h-52 object-cover border-b-4 border-black" />
-              <span class="absolute top-3 left-3 px-3 py-1 text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_#000]" style={`background:${game.color};`}>
-                {game.badge}
-              </span>
-            </div>
-            <div class="p-5">
-              <h3 class="text-2xl font-black mb-1">{game.name}</h3>
-              <p class="text-gray-500 font-bold mb-4">Top up {game.currency}</p>
-              <div class="w-full py-3 font-black uppercase tracking-wider text-center border-2 border-black shadow-[3px_3px_0px_0px_#000] group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[1px_1px_0px_0px_#000] transition-all" style={`background:${game.color};`}>
-                Top Up Sekarang &rarr;
+    {games.length === 0 ? (
+      <Loading text="Memuat game..." />
+    ) : (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="games-grid">
+        {games.map((game) => (
+          <article class="game-card group border-4 border-black bg-white shadow-[6px_6px_0px_0px_#000] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#000] transition-all duration-150" data-category={game.category}>
+            <a href={`/games/${game.slug}`} class="block">
+              <div class="relative">
+                <img src={game.img} alt={game.name} loading="lazy" decoding="async" class="w-full h-52 object-cover border-b-4 border-black" />
+                <span class="absolute top-3 left-3 px-3 py-1 text-xs font-black uppercase tracking-wider border-2 border-black shadow-[2px_2px_0px_0px_#000]" style={`background:${game.color};`}>
+                  {game.badge}
+                </span>
               </div>
-            </div>
-          </a>
-        </article>
-      ))}
-    </div>
+              <div class="p-5">
+                <h3 class="text-2xl font-black mb-1">{game.name}</h3>
+                <p class="text-gray-500 font-bold mb-4">Top up {game.currency}</p>
+                <div class="w-full py-3 font-black uppercase tracking-wider text-center border-2 border-black shadow-[3px_3px_0px_0px_#000] group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[1px_1px_0px_0px_#000] transition-all" style={`background:${game.color};`}>
+                  Top Up Sekarang &rarr;
+                </div>
+              </div>
+            </a>
+          </article>
+        ))}
+      </div>
+    )}
   </div>
 </section>
 <script>
