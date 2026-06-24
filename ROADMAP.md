@@ -64,19 +64,19 @@ Setiap hari **minimal 10 commit** dengan format:
 | 3 | Create & run migration: product_packages table | feat | â–¡ |
 | 4 | Create & run migration: gear_specs table | feat | â–¡ |
 | 5 | Create & run migration: orders + order_items table | feat | â–¡ |
-| 6 | Create & run migration: users + admin table | feat | â–¡ |
-| 7 | Create & run migration: vouchers table | feat | â–¡ |
-| 8 | Create & run migration: reviews table | feat | â–¡ |
-| 9 | Configure RLS policies (public read for products) | feat | â–¡ |
-| 10 | Configure RLS policies (user-specific orders) | feat | â–¡ |
-| 11 | Update products.ts to query Supabase first | refactor | â–¡ |
-| 12 | Replace localStorage order writes with Supabase | feat | â–¡ |
-| 13 | Generate TypeScript types from Supabase schema | chore | â–¡ |
-| 14 | Add error handling + fallback for Supabase | fix | â–¡ |
-| 15 | Add loading states for all data queries | style | â–¡ |
-| 16 | Add network error toast notifications | feat | â–¡ |
-| 17 | Add retry logic for failed Supabase queries | feat | â–¡ |
-| 18 | Test full flow: browse â†’ cart â†’ checkout â†’ order | test | â–¡ |
+| 6 | Create & run migration: users + admin table | feat | ✅ |
+| 7 | Create & run migration: vouchers table | feat | ✅ |
+| 8 | Create & run migration: reviews table | feat | ✅ |
+| 9 | Configure RLS policies (public read for products) | feat | ✅ |
+| 10 | Configure RLS policies (user-specific orders) | feat | ✅ |
+| 11 | Update products.ts to query Supabase first | refactor | ✅ |
+| 12 | Replace localStorage order writes with Supabase | feat | ✅ |
+| 13 | Generate TypeScript types from Supabase schema | chore | ✅ |
+| 14 | Add error handling + fallback for Supabase | fix | ✅ |
+| 15 | Add loading states for all data queries | style | ✅ |
+| 16 | Add network error toast notifications | feat | ✅ |
+| 17 | Add retry logic for failed Supabase queries | feat | ✅ |
+| 18 | Test full flow: browse â†’ cart â†’ checkout â†’ order | test | ✅ |
 
 ### â–¡ 1.2 Real Authentication (14 commit)
 
@@ -303,7 +303,7 @@ Setiap hari **minimal 10 commit** dengan format:
 
 | No | Task | Scope | Status |
 |:--:|------|-------|:------:|
-| 1 | Create vouchers table migration | feat | â–¡ |
+| 1 | Create vouchers table migration | feat | ✅ |
 | 2 | Move voucher storage from localStorage to Supabase | feat | â–¡ |
 | 3 | Add voucher validation on server-side | feat | â–¡ |
 | 4 | Add voucher usage constraints (max uses, expiry) | feat | â–¡ |
@@ -903,7 +903,7 @@ git push origin main
 
 ---
 
-*Last Updated: 2026-06-23*
+*Last Updated: 2026-06-25*
 *Author: Claude Code AI Assistant*
 *TopZone Project v0.0.1*
 
